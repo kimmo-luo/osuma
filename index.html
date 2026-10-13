@@ -36,11 +36,13 @@
     <div class="inputs notranslate" translate="no">
       <div class="field">
         <label for="ad" data-i18n="adLabel">Työpaikkailmoitus</label>
-        <textarea id="ad" rows="12" data-gramm="false" data-enable-grammarly="false" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" data-i18n-placeholder="adPlaceholder"></textarea>
+        <p id="ad-hint" class="hint" data-i18n="adHint">Liitä vain ilmoituksen tehtävä- ja vaatimusosa, ei hakuohjeita, yhteystietoja tai yritysesittelyä.</p>
+        <textarea id="ad" aria-describedby="ad-hint" rows="12" data-gramm="false" data-enable-grammarly="false" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" data-i18n-placeholder="adPlaceholder"></textarea>
       </div>
       <div class="field">
         <label for="cv" data-i18n="cvLabel">CV</label>
-        <textarea id="cv" rows="12" data-gramm="false" data-enable-grammarly="false" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" data-i18n-placeholder="cvPlaceholder"></textarea>
+        <p id="cv-hint" class="hint" data-i18n="cvHint">Liitä CV:si tekstinä, esimerkiksi kopioimalla se Wordista tai PDF:stä.</p>
+        <textarea id="cv" aria-describedby="cv-hint" rows="12" data-gramm="false" data-enable-grammarly="false" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" data-i18n-placeholder="cvPlaceholder"></textarea>
       </div>
     </div>
 

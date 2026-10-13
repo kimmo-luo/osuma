@@ -12,7 +12,9 @@
       tagline: 'Vertaa työpaikkailmoitusta ja CV:täsi',
       privacy: 'Tekstit käsitellään vain tässä selaimessa. Mitään ei lähetetä minnekään, eikä käytössä ole analytiikkaa tai evästeitä.',
       adLabel: 'Työpaikkailmoitus',
+      adHint: 'Liitä vain ilmoituksen tehtävä- ja vaatimusosa, ei hakuohjeita, yhteystietoja tai yritysesittelyä.',
       cvLabel: 'CV',
+      cvHint: 'Liitä CV:si tekstinä, esimerkiksi kopioimalla se Wordista tai PDF:stä.',
       adPlaceholder: 'Liitä työpaikkailmoituksen teksti tähän…',
       cvPlaceholder: 'Liitä CV:si teksti tähän…',
       compare: 'Vertaa',
@@ -23,7 +25,7 @@
       keywords: 'Avainsanat',
       found: 'Löytyy CV:stä',
       missing: 'Puuttuu CV:stä',
-      howto: 'Vertailu tehdään sanan alun perusteella, joten taivutetut muodot löytyvät (esim. "myynti" löytää sanan "myyntityössä"). Yleiset täytesanat jätetään pois. Nuoli näyttää, mikä CV:n sana vastasi.',
+      howto: 'Vertailu tehdään sanan alun perusteella, joten taivutetut muodot ja yhdyssanat löytyvät (esim. "myynti" löytää sanan "myyntityössä" ja "kokemus" sanan "työkokemus"). Kaupan alan synonyymit (esim. esillelaitto = esillepano) tunnistetaan. Täytesanat, hakuohjeiden sanat, päivämäärät, osoitteet ja yrityksen nimi jätetään pois. Nuoli näyttää, mikä CV:n sana vastasi.',
       footer: 'Osuma v1 · ilman tekoälyä · MIT-lisenssi',
       noscript: 'Osuma tarvitsee JavaScriptin. Kaikki käsittely tapahtuu selaimessasi.',
       errBoth: 'Liitä sekä työpaikkailmoitus että CV.',
@@ -45,7 +47,9 @@
       tagline: 'Compare a job ad with your CV',
       privacy: 'Your texts are processed only in this browser. Nothing is sent anywhere, and there are no analytics or cookies.',
       adLabel: 'Job ad',
+      adHint: 'Paste only the duties and requirements part of the ad, not the application instructions, contact details or company introduction.',
       cvLabel: 'CV',
+      cvHint: 'Paste your CV as text, for example by copying it from Word or a PDF.',
       adPlaceholder: 'Paste the job ad text here…',
       cvPlaceholder: 'Paste your CV text here…',
       compare: 'Compare',
@@ -56,7 +60,7 @@
       keywords: 'Keywords',
       found: 'Found in CV',
       missing: 'Missing from CV',
-      howto: 'Words are compared by their beginning, so inflected forms match (e.g. "manage" finds "managing", "myynti" finds "myyntityössä"). Common filler words are ignored. The arrow shows which CV word matched.',
+      howto: 'Words are compared by their beginning, so inflected forms and compounds match (e.g. "manage" finds "managing", "kokemus" finds "työkokemus"). Common retail synonyms are recognised (e.g. esillelaitto = esillepano). Filler words, application instructions, dates, addresses and the company name are ignored. The arrow shows which CV word matched.',
       footer: 'Osuma v1 · no AI · MIT licence',
       noscript: 'Osuma needs JavaScript. Everything is processed in your browser.',
       errBoth: 'Paste both the job ad and your CV.',
@@ -106,9 +110,62 @@
     'tulee tulisi tulla pitää saa saada saat saamme ' +
     'haemme etsimme tarjoamme odotamme toivomme arvostamme edellytämme edellytetään vaadimme ' +
     'eduksi etua katsotaan plussaa mieluiten vähintään vuosi vuoden vuotta vuodesta ' +
-    'hae hakea hakemus hakemuksen hakemuksesi haku hakuaika lisätietoja lisätiedot ' +
+    'hae hakea haku lisätietoja lisätiedot ' +
+    'hei moi terve tervetuloa kiitos joten osa osan osana osaksi osia tehdä tehdään teet teemme tekee tekemään tehden ' +
+    'pian aina lisää joskus usein harvoin sinne tänne siellä täällä sieltä täältä heti kahta kaksi kolme yksi yhden yhtä neljä viisi ' +
+    'uusi uutta uuden uudet uusia uusien vielä ehkä juuri aivan melko hieman vähän enemmän ainakin esimerkiksi kuitenkin tietenkin tietysti toki ' +
+    'siksi sitten myöhemmin nopeasti mahdollisimman myöskin jopa kerran kerro kerrot kertoa katso lue klikkaa linkki linkistä linkin ' +
+    'alla alta yllä ylle mennessä viimeistään klo kello alkaen saakka asti tänään huomenna ensi heti mukaamme joukkoomme ' +
+    'kiinnostunut kiinnostuitko kiinnostaako kuulostaako kuulostaa tule tulet tulemme pääset pääsee voimme haluat haluamme haluaisit ' +
+    'hakee haetaan joukkoonsa päättyy lähetä lähettää lähetät tarkista tarkistathan tietoa tietoja aloittamaan aloittaa aloita opittavaa ' +
+    'oy oyj ab ltd ky inc group ' +
+    'sähköpostilla sähköpostitse sähköpostiin sähköposti osoite osoitteessa osoitteeseen osoitteesta ' +
+    'haastattelemme haastatteluun haastatteluihin viikolla viikon ' +
+    'maanantaina tiistaina keskiviikkona torstaina perjantaina lauantaina sunnuntaina ' +
     'www http https com fi'
   ).split(/\s+/);
+
+  // Word beginnings that belong to application instructions or dates, not to the job.
+  // Kept narrow so that skills such as "rekrytointi" or "sähköpostimarkkinointi" survive.
+  var STOP_PREFIXES = [
+    'sähköpostiosoit', 'roskapost', 'hakupäiv', 'hakuaj', 'hakuai', 'hakemu', 'hakulomak', 'hakuilmoit', 'hakuohj',
+    'hakij', 'hakuprosess', 'rekryilmoit', 'rekrytointiprosess', 'valintaprosess', 'yhteystie',
+    'kuukau', 'tammikuu', 'helmikuu', 'maaliskuu', 'huhtikuu', 'toukokuu', 'kesäkuu', 'heinäkuu', 'elokuu',
+    'syyskuu', 'lokakuu', 'marraskuu', 'joulukuu',
+    'spam', 'january', 'february', 'march', 'april',
+    'june', 'july', 'august', 'september', 'october', 'november', 'december'
+  ];
+
+  // Email addresses, web addresses and bare domains (tokmanni.fi/ura) are skipped.
+  // No i flag: a bare domain needs a lowercase ending, so "palvelusta.Se" and "ASP.NET" stay words.
+  // Lengths are bounded so a huge pasted token cannot make the regex crawl.
+  var ADDRESS_RE = /[^\s@]{1,64}@[^\s@]{1,255}|(?:[hH][tT][tT][pP][sS]?:\/\/|[wW]{3}\.)\S+|[\p{L}\p{N}-]{1,63}(?:\.[\p{L}\p{N}-]{1,63}){0,4}\.(?:fi|com|net|org|eu|se|info|biz)(?![\p{L}\p{N}])(?:\/\S*)?/gu;
+  // Technology names that look like domains.
+  var TECH_NAMES = ['asp.net', 'vb.net', 'ado.net'];
+  function isAddress(m) { return TECH_NAMES.indexOf(m.toLowerCase()) === -1; }
+  // Names that are not the employer.
+  var NOT_COMPANY = ['gmail', 'hotmail', 'outlook', 'yahoo', 'linkedin', 'duunitori', 'oikotie', 'monster', 'jobly',
+    'te-palvelut', 'tyomarkkinatori', 'google', 'facebook', 'instagram', 'rekry', 'careers', 'jobs', 'mail', 'www',
+    'suomi', 'finland', 'sverige', 'norge', 'danmark', 'europe', 'nordic'];
+  var COMPANY_RE = /(\p{Lu}[\p{L}&-]+)(?:\s+(\p{Lu}[\p{L}&-]+))?\s+(?:Oyj|Oy|Ab|Ltd|Inc|Ky|Group)(?![\p{L}])/gu;
+
+  // Words in a small retail glossary that mean the same thing.
+  var SYNONYMS = [
+    ['esillelaitto', 'esillepano', 'esilleasettelu'],
+    ['hyllytys', 'hyllyttäminen', 'hyllyttää'],
+    ['kassatyö', 'kassatyöskentely', 'kassapalvelu', 'kassa'],
+    ['asiakaspalvelu', 'asiakaspalvelija', 'asiakaspalvelutyö', 'asiakastyö'],
+    ['myymälätyö', 'myymälätyöntekijä', 'myymäläapulainen'],
+    ['tavaranvastaanotto', 'kuormanpurku', 'tavaranpurku', 'kuormapurku'],
+    ['inventaario', 'inventointi'],
+    ['somistus', 'somistaminen', 'merchandising'],
+    ['hinnoittelu', 'hinnoitteleminen', 'hintamerkintä'],
+    ['varastotyö', 'varastointi', 'varastotyöskentely'],
+    ['vuorotyö', 'vuorotyöskentely'],
+    ['siivous', 'siivoaminen'],
+    ['shelving', 'stocking', 'restocking', 'replenishment'],
+    ['cashier', 'checkout']
+  ];
 
   var STOP_EN = (
     'and or the an of to in on at for with by from as is are be been being was were will would should shall can could may might must ' +
@@ -117,7 +174,7 @@
     'over under all any some each both either neither etc e.g i.e eg ie plus well able strong good great excellent ideally preferably ' +
     'looking seeking join apply applicants candidate candidates role position opportunity offer offers including include includes ' +
     'within across per via there here just only own one ' +
-    'requirements required nice least year years minimum'
+    'requirements required nice least year years minimum hi hello thanks always often soon new two three'
   ).split(/\s+/);
 
   var STOP = Object.create(null);
@@ -133,16 +190,81 @@
   var TOKEN_RE = /[\p{L}\p{N}][\p{L}\p{N}+#.\-]*/gu;
   var HAS_LETTER = /\p{L}/u;
 
+  // Blank out addresses but keep positions, so requirement lines still line up.
+  function maskAddresses(text) {
+    return text.replace(ADDRESS_RE, function (m) { return isAddress(m) ? ' '.repeat(m.length) : m; });
+  }
+
   // Returns [{ word: lowercased, raw: original, index, length }]
   function tokenize(text) {
     var out = [];
     var m;
+    var masked = maskAddresses(text);
     TOKEN_RE.lastIndex = 0;
-    while ((m = TOKEN_RE.exec(text)) !== null) {
-      var raw = m[0].replace(/[.\-]+$/, '');
-      if (raw) out.push({ word: raw.toLowerCase(), raw: raw, index: m.index, length: raw.length });
+    while ((m = TOKEN_RE.exec(masked)) !== null) {
+      // A missing space after a full stop ("palvelusta.Se on") splits the token.
+      var pieces = m[0].split(/\.(?=\p{Lu}\p{Ll})/u);
+      var at = m.index;
+      for (var i = 0; i < pieces.length; i++) {
+        var raw = pieces[i].replace(/[.\-]+$/, '');
+        if (raw) out.push({ word: raw.toLowerCase(), raw: raw, index: at, length: raw.length });
+        at += pieces[i].length + 1;
+      }
     }
     return out;
+  }
+
+  // The employer's name, guessed from the ad's email and web addresses
+  // (rekry@tokmanni.fi → tokmanni) and from "Name Oy". Set by analyse().
+  var companies = [];
+
+  // How many words in the text start with `name`.
+  function countWordStarts(text, name) {
+    var n = 0;
+    tokenize(text).forEach(function (t) { if (t.word.indexOf(name) === 0) n++; });
+    return n;
+  }
+
+  function detectCompanies(ad) {
+    var found = [];
+    function add(name) {
+      name = name.toLowerCase();
+      if (name.length >= 3 && NOT_COMPANY.indexOf(name) === -1 && found.indexOf(name) === -1) found.push(name);
+    }
+    (ad.match(ADDRESS_RE) || []).filter(isAddress).forEach(function (addr) {
+      var host = addr.replace(/^[^@]*@/, '').replace(/^https?:\/\//i, '').split(/[\/?#]/)[0]
+        .replace(/[.,;:!?)\]]+$/, '');
+      var labels = host.split('.').filter(Boolean);
+      if (labels.length >= 2) add(labels[labels.length - 2]);
+    });
+    // "Name Oy" counts only when the name appears elsewhere too, so that a
+    // customer or partner mentioned once (Microsoft Oy) is not dropped.
+    var m;
+    COMPANY_RE.lastIndex = 0;
+    while ((m = COMPANY_RE.exec(ad)) !== null) {
+      [m[1], m[2]].forEach(function (name) {
+        if (name && countWordStarts(ad, name.toLowerCase()) >= 2) add(name);
+      });
+    }
+    return found;
+  }
+
+  // The company name itself or with a short ending (Tokmannilla), not every
+  // word that starts with it (Kone ≠ konetekniikka).
+  function isCompany(w) {
+    var d = degrade(w);
+    for (var i = 0; i < companies.length; i++) {
+      var c = degrade(companies[i]);
+      if (d.indexOf(c) === 0 && d.length - c.length <= 4 && ENDING_RE.test(d.slice(c.length))) return true;
+    }
+    return false;
+  }
+
+  function hasStopPrefix(w) {
+    for (var i = 0; i < STOP_PREFIXES.length; i++) {
+      if (w.indexOf(STOP_PREFIXES[i]) === 0) return true;
+    }
+    return false;
   }
 
   function isKeyword(tok) {
@@ -152,6 +274,7 @@
     var caps = raw === raw.toUpperCase() && raw !== raw.toLowerCase();
     if (SHORT_SKILLS[w]) return raw.charAt(0) !== raw.charAt(0).toLowerCase();
     if (STOP[w]) return caps && !!CAPS_KEEP[w];
+    if (hasStopPrefix(w) || isCompany(w)) return false;
     if (w.length >= 3) return true;
     // Two-letter tokens only when they look like an acronym or symbol (UX, HR, C#)
     return w.length === 2 && (caps || /[+#]/.test(w));
@@ -185,40 +308,78 @@
   }
 
   // Letters that Finnish case endings and English suffixes are made of.
-  // "kokemus" may match "kokemuksesta" (rest "ksesta"), but "sales" must not
-  // match "salesforce" (rest "force") nor "java" match "javascript".
+  // A CV word "kokemus" counts for the ad's "kokemuksesta" (rest "ksesta"), but CV "sales"
+  // does not count for the ad's "salesforce" (rest "force"), nor CV "java" for "javascript".
   var ENDING_RE = /^[aäeidghjklmnorstuyö]{0,6}$/;
 
-  // Does CV word `c` count as the ad word `a`?
-  function wordsMatch(a, c) {
-    if (a === c) return true;
-    a = degrade(a);
-    c = degrade(c);
-    if (a === c) return true;
-    if (a.length < 3 || c.length < 3) return false; // short words (UX, B) must match exactly
+  // Words must share at least this many letters, and most of the word.
+  // Shorter words only match with a plain inflection ending (työ → työtä).
+  var MIN_PREFIX = 5;
+  var MAX_COMPOUND = 40;
+  var COMPOUND_JOINT = /[aeiouyäöns]/;
+
+  // Endings a short word may get: työ → työtä, työssä; app → apps.
+  var SHORT_ENDINGS = {};
+  ('n a ä ta tä na nä ksi ssa ssä sta stä lla llä lta ltä lle t s in ihin iin hin hon hun hän hön seen ' +
+   'en an än on ön un yn ja jä ni si nsa nsä mme nne es ed ' +
+   'et ita itä ella ellä elle elta eltä issa issä ista istä een ineen illa illä ille').split(' ').forEach(function (e) { SHORT_ENDINGS[e] = true; });
+
+  // suomi/suomen, kieli/kielen: a final i often turns into e.
+  function iToE(w) {
+    return w.length >= 5 && w.charAt(w.length - 1) === 'i' ? w.slice(0, -1) + 'e' : w;
+  }
+
+  function prefixMatch(a, c) {
     var p = commonPrefix(a, c);
+    if (p < MIN_PREFIX) return false;
     if (c.length > a.length) {
       // CV word is longer: an inflected form or a compound (myynti → myyntityössä).
-      // Short ad words may only get a short ending (SQL ≠ SQLite, Git ≠ GitHub).
-      if (a.length <= 4 && c.length - a.length > a.length - 1) return false;
       return p >= stemLen(a.length);
     }
     // CV word is shorter: the ad uses an inflected form (kokemuksesta ← kokemus).
     return p >= stemLen(c.length) && ENDING_RE.test(a.slice(p));
   }
 
+  // Does CV word `c` count as the ad word `a`?
+  function wordsMatch(a, c) {
+    if (a === c) return true;
+    var da = degrade(a);
+    var dc = degrade(c);
+    if (da === dc) return true;
+    if (Math.min(a.length, c.length) < MIN_PREFIX) {
+      if (Math.min(a.length, c.length) < 3) return false; // UX, B: exact only
+      var s = a.length < c.length ? a : c;
+      var l = a.length < c.length ? c : a;
+      return l.indexOf(s) === 0 && SHORT_ENDINGS[l.slice(s.length)] === true;
+    }
+    // Without gradation the words must still start alike (kuntoa ≠ kunnolla).
+    if (commonPrefix(a, c) < MIN_PREFIX - 1) return false;
+    return prefixMatch(da, dc) || prefixMatch(iToE(da), dc) || prefixMatch(da, iToE(dc));
+  }
+
   // CV words indexed by their first three (degraded) letters, so lookups stay fast.
+  // Compounds are also indexed by each later starting point (työkokemus → kokemus).
   function buildIndex(words) {
     var exact = Object.create(null);
     var buckets = Object.create(null);
+    var tails = Object.create(null);
     words.forEach(function (w) {
       exact[w] = true;
       var d = degrade(w);
       if (d.length < 3) return;
       var k = d.slice(0, 3);
       (buckets[k] || (buckets[k] = [])).push(w);
+      // Hyphen parts are indexed as words of their own; very long tokens are pasted junk.
+      if (w.indexOf('-') !== -1 || w.length > MAX_COMPOUND) return;
+      for (var i = 3; i + MIN_PREFIX <= w.length; i++) {
+        // The first part of a Finnish compound usually ends in a vowel, n or s
+        // (työ|kokemus, kielen|kääntäjä, asiakas|palvelu), not epänor|maali.
+        if (!COMPOUND_JOINT.test(w.charAt(i - 1))) continue;
+        var tk = w.substr(i, MIN_PREFIX - 1);
+        (tails[tk] || (tails[tk] = [])).push({ word: w, tail: w.slice(i) });
+      }
     });
-    return { exact: exact, buckets: buckets };
+    return { exact: exact, buckets: buckets, tails: tails };
   }
 
   function findWord(word, index) {
@@ -226,9 +387,34 @@
     var d = degrade(word);
     if (d.length < 3) return null;
     var list = index.buckets[d.slice(0, 3)];
-    if (!list) return null;
-    for (var i = 0; i < list.length; i++) {
-      if (wordsMatch(word, list[i])) return list[i];
+    if (list) {
+      for (var i = 0; i < list.length; i++) {
+        if (wordsMatch(word, list[i])) return list[i];
+      }
+    }
+    // The ad word as the last part of a CV compound: kokemus → työkokemus.
+    if (word.length >= MIN_PREFIX) {
+      var tails = index.tails[word.substr(0, MIN_PREFIX - 1)];
+      if (tails) {
+        for (var j = 0; j < tails.length; j++) {
+          if (wordsMatch(word, tails[j].tail)) return tails[j].word;
+        }
+      }
+    }
+    return null;
+  }
+
+  function findSynonym(word, index) {
+    for (var i = 0; i < SYNONYMS.length; i++) {
+      var group = SYNONYMS[i];
+      // Both ways, so that "täydentämään" or "siistiä" does not join a group by a loose prefix.
+      var own = group.filter(function (m) { return wordsMatch(word, m) && wordsMatch(m, word); });
+      if (!own.length) continue;
+      for (var j = 0; j < group.length; j++) {
+        if (own.indexOf(group[j]) !== -1) continue;
+        var hit = findWord(group[j], index);
+        if (hit) return hit;
+      }
     }
     return null;
   }
@@ -236,12 +422,12 @@
   // Hyphenated words (B-ajokortti, CRM-järjestelmä) also match when every
   // part is found separately, single letters included.
   function findInCv(word, index) {
-    var hit = findWord(word, index);
+    var hit = findWord(word, index) || findSynonym(word, index);
     if (hit || word.indexOf('-') === -1) return hit;
     var parts = word.split('-').filter(Boolean);
     var hits = [];
     for (var i = 0; i < parts.length; i++) {
-      var h = findWord(parts[i], index);
+      var h = findWord(parts[i], index) || findSynonym(parts[i], index);
       if (!h) return null;
       if (hits.indexOf(h) === -1) hits.push(h);
     }
@@ -264,6 +450,7 @@
   }
 
   function analyse(ad, cv) {
+    companies = detectCompanies(ad);
     var cvWords = [];
     var seen = Object.create(null);
     function addCvWord(w) {

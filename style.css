@@ -115,6 +115,7 @@ main { padding-top: 16px; padding-bottom: 24px; }
 
 .field { display: flex; flex-direction: column; min-width: 0; }
 label { font-weight: 600; margin-bottom: 6px; }
+.hint { margin: -2px 0 8px; color: var(--muted); font-size: 0.88rem; }
 textarea {
   width: 100%;
   min-height: 180px;

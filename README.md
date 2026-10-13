@@ -12,7 +12,7 @@ Osuma on ilmainen, selaimessa toimiva työkalu, joka vertaa työpaikkailmoitusta
 
 ### Miten se toimii
 
-1. Liitä työpaikkailmoituksen teksti ensimmäiseen laatikkoon.
+1. Liitä työpaikkailmoituksen tehtävä- ja vaatimusosa ensimmäiseen laatikkoon (ei hakuohjeita tai yhteystietoja).
 2. Liitä CV:si teksti toiseen laatikkoon.
 3. Paina **Vertaa**.
 
@@ -22,7 +22,13 @@ Tulos näyttää:
 - **vaatimukset**: ilmoituksen luettelokohdat (tai virkkeet), vihreänä jos vähintään puolet kohdan avainsanoista löytyy CV:stä, muuten punaisena
 - **avainsanat**: CV:stä löytyvät (vihreä) ja puuttuvat (punainen) sanat
 
-Suomen taivutus on huomioitu: sanoja verrataan niiden alun perusteella, joten esimerkiksi "myynti" löytää sanan "myyntityössä" ja "kokemus" sanan "kokemuksesta". Myös yleisimmät astevaihtelut (myynti/myynnin, kauppa/kaupan) huomioidaan. Täytesanat kuten *ja, on, sekä, että* jätetään pois.
+Suomen taivutus on huomioitu: sanoja verrataan niiden alun perusteella, joten esimerkiksi "myynti" löytää sanan "myyntityössä" ja "kokemus" sanan "kokemuksesta". Yhteisen alun pitää olla vähintään 5 merkkiä ja suurin osa sanasta; lyhyemmät sanat löytyvät vain tavallisen taivutuspäätteen kanssa (työ → työtä, mutta käy ≠ käyttö). Myös yleisimmät astevaihtelut (myynti/myynnin, kauppa/kaupan) huomioidaan.
+
+Lisäksi:
+
+- Yhdyssanan loppuosa löytyy: "kokemus" löytää sanan "työkokemus".
+- Pieni kaupan alan synonyymilista: esim. esillelaitto = esillepano, hyllytys = hyllyttäminen, inventaario = inventointi.
+- Pois jätetään täytesanat (*ja, on, sekä, että, joten, aina…*), hakuohjeiden sanat (hakemus, sähköpostilla, hakuaika, roskaposti…), kuukaudet ja päivämäärät, sähköposti- ja nettiosoitteet sekä yrityksen nimi, joka päätellään ilmoituksen osoitteista (rekry@yritys.fi) ja muodosta "Nimi Oy".
 
 ### Yksityisyys
 
@@ -35,9 +41,10 @@ Suomen taivutus on huomioitu: sanoja verrataan niiden alun perusteella, joten es
 
 Versio 1 vertaa sanoja, ei merkityksiä:
 
-- Se ei tunnista synonyymejä ("johtaminen" vs. "vedin tiimiä").
-- Se ei tunnista yhdyssanan loppuosaa: ilmoituksen "kieli" ei löydy CV:n sanasta "äidinkieli".
-- Alkuun perustuva vertailu voi joskus antaa väärän osuman, kun eri sanat alkavat samoin (esim. englannin "international" ja "internal"). Lyhyet sanat ja selvästi eri sanat (Java/JavaScript, Sales/Salesforce, asiakas/asiakaspalvelu) erotetaan toisistaan.
+- Se tunnistaa vain pienen kaupan alan synonyymilistan, ei muita samaa tarkoittavia ilmauksia ("johtaminen" vs. "vedin tiimiä").
+- Alkuun perustuva vertailu voi joskus antaa väärän osuman, kun eri sanat alkavat samoin (esim. englannin "international" ja "internal"). CV:n lyhyempi sana ei kuitenkaan kelpaa ilmoituksen pidempään sanaan: CV:n "Java" ei täytä ilmoituksen "JavaScriptiä" eikä "asiakas" sanaa "asiakaspalvelu". Toisin päin osuma tulee, koska ilmoituksen "myynti" pitää löytää CV:n "myyntityössä".
+- Jotta "kuntoa" ei löytäisi sanaa "kunnolla", astevaihtelu huomioidaan vasta neljän saman alkukirjaimen jälkeen. Siksi esim. kunta/kunnan ei täsmää.
+- Yrityksen nimi tunnistetaan vain, jos se näkyy ilmoituksen sähköposti- tai nettiosoitteessa tai muodossa "Nimi Oy" ja nimi esiintyy ilmoituksessa vähintään kahdesti.
 
 Tekoälypohjainen vertailu on suunnitteilla versioon 2.
 
@@ -59,7 +66,7 @@ Osuma (Finnish for "a hit") is a free, browser-based tool that compares a job ad
 
 ### How it works
 
-1. Paste the job ad into the first box.
+1. Paste the duties and requirements part of the job ad into the first box (not the application instructions or contact details).
 2. Paste your CV into the second box.
 3. Press **Compare**.
 
@@ -69,7 +76,13 @@ The result shows:
 - **requirements**: the ad's bullet points (or sentences), green if at least half of their keywords are in your CV, red otherwise
 - **keywords**: words found in your CV (green) and missing from it (red)
 
-Finnish inflection is taken into account: words are compared by their beginning, so "myynti" finds "myyntityössä" and "manage" finds "managing". Common Finnish consonant gradation (myynti/myynnin) is handled too. Filler words such as *and, the, ja, on, sekä, että* are ignored.
+Finnish inflection is taken into account: words are compared by their beginning, so "myynti" finds "myyntityössä" and "manage" finds "managing". The shared beginning must be at least 5 letters and most of the word; shorter words only match with a regular inflection ending (työ → työtä, but käy ≠ käyttö). Common Finnish consonant gradation (myynti/myynnin) is handled too.
+
+Also:
+
+- The last part of a compound is found: "kokemus" finds "työkokemus".
+- A small retail synonym list: e.g. esillelaitto = esillepano, hyllytys = hyllyttäminen, inventaario = inventointi.
+- Ignored: filler words (*and, the, ja, on, sekä, että, joten…*), Finnish application-instruction words (hakemus, sähköpostilla, hakuaika, roskaposti…), months and dates, email and web addresses, and the company name, which is inferred from the ad's addresses (jobs@company.fi) and from "Name Oy".
 
 ### Privacy
 
@@ -82,9 +95,10 @@ Finnish inflection is taken into account: words are compared by their beginning,
 
 Version 1 compares words, not meaning:
 
-- It does not recognise synonyms ("leadership" vs. "led a team").
-- It does not look at the end of compound words: "kieli" in the ad is not found in "äidinkieli" in the CV.
-- Prefix matching can occasionally give a false match when different words start the same way (e.g. "international" and "internal"). Short words and clearly different words (Java/JavaScript, Sales/Salesforce, asiakas/asiakaspalvelu) are kept apart.
+- It only recognises a small retail synonym list, not other expressions with the same meaning ("leadership" vs. "led a team").
+- Prefix matching can occasionally give a false match when different words start the same way (e.g. "international" and "internal"). A shorter CV word never counts for a longer ad word: "Java" in the CV does not satisfy "JavaScript" in the ad, nor "asiakas" "asiakaspalvelu". The other way round it does match, because the ad's "myynti" must find "myyntityössä" in the CV.
+- To keep "kuntoa" from matching "kunnolla", consonant gradation is only considered after four identical leading letters, so e.g. kunta/kunnan does not match.
+- The company name is recognised only if it appears in the ad's email or web address, or as "Name Oy" with the name appearing at least twice in the ad.
 
 AI-based comparison is planned for version 2.
 

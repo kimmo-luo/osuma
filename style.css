@@ -241,6 +241,8 @@ h2[tabindex="-1"]:focus { outline: none; }
 .req.todo .where { color: var(--muted); }
 .w-ok { color: var(--ok); font-weight: 700; }
 .w-miss { color: var(--miss); font-weight: 700; text-decoration: underline dotted; text-underline-offset: 3px; }
+/* Topic found, but not the trait itself (asiakaspalveluasenne ← asiakaspalvelusta). */
+.w-part { color: var(--ok); text-decoration: underline dashed; text-underline-offset: 3px; }
 
 .chips { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
 .chip {

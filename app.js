@@ -490,7 +490,8 @@
 
   // Hyphenated words (B-ajokortti, CRM-järjestelmä) also match when every
   // part is found separately, single letters included.
-  var GENERIC_PART_RE = /^(?:osaami|taid|taito|kokemu|tuntemu|skills?$|knowledge$|experience$)/u;
+  var GENERIC_TOPIC_RE = /^(?:työ|taid|taito|kyky|kyvy|ammat)/u;
+  var GENERIC_PART_RE =/^(?:osaami|taid|taito|kokemu|tuntemu|skills?$|knowledge$|experience$)/u;
 
   // An ad compound whose parts are both in the CV: suomen|kielellä ← suomi, äidinkieli.
   // Limited to language compounds (suomenkielinen, englanninkielellä): elsewhere two
@@ -508,8 +509,39 @@
     return null;
   }
 
+  // Possessive suffixes: asiakkaitamme → asiakkaita, myymälässämme → myymälässä,
+  // kokemuksesi → kokemukse.
+  function stripPossessive(w) {
+    var m = /^(.{5,}?)(?:mme|nne|nsa|nsä)$/u.exec(w) || /^(.{5,}[aeiouyäö])si$/u.exec(w);
+    return m ? m[1] : w;
+  }
+
+  // -kas words double the k when inflected: asiakkaita, asiakkaiden, asiakkaan → asiakas.
+  // Only noun case endings, so verbs (pakkaaminen, lakkaamatta) are left alone.
+  var KAS_RE = /kka(?:a(?:n|na|ksi|ssa|sta|seen|lla|lta|lle|t)|i(?:ta|den|tten|hin|ssa|sta|lla|lta|lle|ksi|na|ne|neen))$/u;
+  // After a possessive suffix the case ending is shortened: asiakkaa|mme, asiakkaide|mme.
+  var KAS_BARE_RE = /kka(?:a|i|ide|ita)$/u;
+  function kasStem(w, bare) {
+    return w.replace(bare ? KAS_BARE_RE : KAS_RE, 'kas');
+  }
+
+  // The word as written first; its base forms only when that finds nothing.
+  function findWordForms(word, index) {
+    var hit = findWord(word, index);
+    if (hit) return hit;
+    var bare = stripPossessive(word);
+    var forms = [bare, kasStem(word, false), bare !== word ? kasStem(bare, true) : word];
+    for (var i = 0; i < forms.length; i++) {
+      if (forms[i] !== word && forms[i].length >= 3) {
+        hit = findWord(forms[i], index);
+        if (hit) return hit;
+      }
+    }
+    return null;
+  }
+
   function findInCv(word, index) {
-    var hit = findWord(word, index) || findSynonym(word, index) || findCompoundParts(word, index);
+    var hit = findWordForms(word, index) || findSynonym(word, index) || findCompoundParts(word, index);
     if (hit || word.indexOf('-') === -1) return hit;
     var parts = word.split('-').filter(Boolean);
     // "Excel-osaaminen" is about Excel: generic parts need not be in the CV.
@@ -517,7 +549,7 @@
     if (specific.length) parts = specific;
     var hits = [];
     for (var i = 0; i < parts.length; i++) {
-      var h = findWord(parts[i], index) || findSynonym(parts[i], index);
+      var h = findWordForms(parts[i], index) || findSynonym(parts[i], index);
       if (!h) return null;
       if (hits.indexOf(h) === -1) hits.push(h);
     }
@@ -929,14 +961,20 @@
           // does not show an "asiakaspalveluasenne".
           var cvTrait = trait && cvHit && isTraitWord(match(t.word));
           var letterTrait = trait && letterHit && isTraitWord(letterMatch(t.word));
-          parts.push({ text: t.raw, ok: trait ? cvTrait || letterTrait : cvHit || letterHit });
+          // A trait found only through a plain word (asiakaspalveluasenne ← "asiakaspalvelusta")
+          // shows that the topic is there, but not the attitude: it counts as "partly".
+          // Generic words (työskennellä, taito, ammattitaito) are in almost every letter
+          // and do not show a topic, so they never count as partly found.
+          var generic = useLetter && GENERIC_TOPIC_RE.test(t.word);
+          var traitPart = trait && !generic && !(cvTrait || letterTrait) && (cvHit || letterHit);
+          parts.push({ text: t.raw, ok: trait ? cvTrait || letterTrait : cvHit || letterHit, part: traitPart });
           var key = groupOf[t.word] || degrade(t.word).slice(0, MIN_PREFIX);
           if (counted.indexOf(key) === -1) {
             counted.push(key);
             total++;
             if (cvHit) inCv++;
             if (letterHit) inLetter++;
-            if (cvHit || letterHit) inEither++;
+            if ((cvHit || letterHit) && !generic) inEither++;
             if (trait) {
               traits++;
               if (cvTrait || letterTrait) traitsFound++;
@@ -959,10 +997,12 @@
         // and the letter together. Trait words decide when the clause has any, so that
         // "asiakaspalvelu" in the CV does not tick off "Iloinen asiakaspalveluasenne".
         softOk: traits > 0 ? traitsFound / traits >= 1 / 3 : total > 0 && inEither / total >= 1 / 3,
-        partly: traits > 0 ? traitsFound > 0 : inEither > 0,
-        // Where it was found, judged by the trait words when the clause has any.
-        inCv: traits > 0 ? traitInCv : inCv > 0,
-        inLetter: traits > 0 ? traitInLetter : inLetter > 0
+        // Partly: some word of the clause was found, a trait or a plain one
+        // ("myymälätyöskentelyä" ← "myymälätyöstä").
+        partly: inEither > 0,
+        // Where it was found: by the trait words when one of them matched, otherwise by any word.
+        inCv: traitsFound > 0 ? traitInCv : inCv > 0,
+        inLetter: traitsFound > 0 ? traitInLetter : inLetter > 0
       };
     }
 
@@ -1063,7 +1103,7 @@
     if (!badge) text.appendChild(srOnly(q.ok ? t('reqOk') : t('reqMiss')));
     q.parts.forEach(function (p) {
       if (p.ok === undefined) text.appendChild(document.createTextNode(p.text));
-      else text.appendChild(el('span', p.ok ? 'w-ok' : status === 'todo' ? '' : 'w-miss', p.text));
+      else text.appendChild(el('span', p.ok ? 'w-ok' : p.part ? 'w-part' : status === 'todo' ? '' : 'w-miss', p.text));
     });
     if (badge) {
       text.appendChild(document.createTextNode(' '));

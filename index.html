@@ -44,6 +44,11 @@
         <p id="cv-hint" class="hint" data-i18n="cvHint">Liitä CV:si tekstinä, esimerkiksi kopioimalla se Wordista tai PDF:stä.</p>
         <textarea id="cv" aria-describedby="cv-hint" rows="12" data-gramm="false" data-enable-grammarly="false" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" data-i18n-placeholder="cvPlaceholder"></textarea>
       </div>
+      <div class="field field-letter">
+        <label for="letter" data-i18n="letterLabel">Hakemuskirje (vapaaehtoinen)</label>
+        <p id="letter-hint" class="hint" data-i18n="letterHint">Jos liität kirjeen, Osuma tarkistaa siitä luonteeseen, asenteeseen ja motivaatioon liittyvät vaatimukset.</p>
+        <textarea id="letter" aria-describedby="letter-hint" rows="8" data-gramm="false" data-enable-grammarly="false" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" data-i18n-placeholder="letterPlaceholder"></textarea>
+      </div>
     </div>
 
     <div class="actions">
@@ -65,15 +70,22 @@
       </div>
 
       <div id="req-block" class="block">
-        <h3 data-i18n="requirements">Vaatimukset</h3>
+        <h3 data-i18n="requirements">CV:hen kuuluvat vaatimukset</h3>
         <p id="req-summary" class="muted"></p>
         <ul id="req-list" class="req-list"></ul>
       </div>
       <p id="fallback-note" class="muted small" data-i18n="fallbackNote" hidden>Ilmoituksesta ei tunnistettu vaatimuslauseita, joten prosentti lasketaan koko ilmoituksen sanoista.</p>
 
+      <div id="letter-block" class="block" hidden>
+        <h3 id="letter-title"></h3>
+        <p id="letter-summary" class="muted"></p>
+        <ul id="letter-list" class="req-list"></ul>
+      </div>
+
       <div class="block">
         <h3 data-i18n="keywords">Avainsanat</h3>
         <div class="kw-group">
+          <p class="muted small" data-i18n="keywordsNote">CV:hen kuuluvien vaatimusten sanat.</p>
           <h4 class="ok-text"><span aria-hidden="true">✓ </span><span data-i18n="found">Löytyy CV:stä</span> <span id="found-count" class="count"></span></h4>
           <ul id="found-list" class="chips"></ul>
         </div>

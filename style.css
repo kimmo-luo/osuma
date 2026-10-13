@@ -111,6 +111,7 @@ main { padding-top: 16px; padding-bottom: 24px; }
 .inputs { display: grid; grid-template-columns: 1fr; gap: 16px; }
 @media (min-width: 760px) {
   .inputs { grid-template-columns: 1fr 1fr; }
+  .field-letter { grid-column: 1 / -1; }
 }
 
 .field { display: flex; flex-direction: column; min-width: 0; }
@@ -223,6 +224,21 @@ h2[tabindex="-1"]:focus { outline: none; }
 .req.ok .req-icon { color: var(--ok); }
 .req.miss .req-icon { color: var(--miss); }
 .req-text { min-width: 0; }
+.req.todo { background: var(--surface); border-color: var(--border); border-style: dashed; }
+.req.todo .req-icon { color: var(--muted); }
+.where {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 0 8px;
+  border-radius: 999px;
+  border: 1px solid currentColor;
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.req.ok .where { color: var(--ok); }
+.req.miss .where { color: var(--miss); }
+.req.todo .where { color: var(--muted); }
 .w-ok { color: var(--ok); font-weight: 700; }
 .w-miss { color: var(--miss); font-weight: 700; text-decoration: underline dotted; text-underline-offset: 3px; }
 

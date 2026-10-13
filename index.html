@@ -69,6 +69,7 @@
         <p id="req-summary" class="muted"></p>
         <ul id="req-list" class="req-list"></ul>
       </div>
+      <p id="fallback-note" class="muted small" data-i18n="fallbackNote" hidden>Ilmoituksesta ei tunnistettu vaatimuslauseita, joten prosentti lasketaan koko ilmoituksen sanoista.</p>
 
       <div class="block">
         <h3 data-i18n="keywords">Avainsanat</h3>
@@ -79,6 +80,10 @@
         <div class="kw-group">
           <h4 class="miss-text"><span aria-hidden="true">✗ </span><span data-i18n="missing">Puuttuu CV:stä</span> <span id="missing-count" class="count"></span></h4>
           <ul id="missing-list" class="chips"></ul>
+        </div>
+        <div id="other-block" class="other-block" hidden>
+          <h3 data-i18n="other">Muu ilmoitusteksti (ei lasketa)</h3>
+          <ul id="other-list" class="other-list"></ul>
         </div>
         <p class="muted small" data-i18n="howto">Vertailu tehdään sanan alun perusteella, joten taivutetut muodot löytyvät (esim. "myynti" löytää sanan "myyntityössä"). Yleiset täytesanat jätetään pois.</p>
       </div>

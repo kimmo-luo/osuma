@@ -32,7 +32,10 @@
       errAd: 'Liitä työpaikkailmoitus.',
       errCv: 'Liitä CV.',
       errNoKeywords: 'Ilmoituksesta ei löytynyt vertailtavia sanoja.',
-      scoreText: function (f, t) { return f + ' / ' + t + ' ilmoituksen avainsanasta löytyy CV:stä.'; },
+      scoreText: function (f, t) { return f + ' / ' + t + ' vaatimusten avainsanasta löytyy CV:stä.'; },
+      scoreTextAll: function (f, t) { return f + ' / ' + t + ' ilmoituksen avainsanasta löytyy CV:stä.'; },
+      other: 'Muu ilmoitusteksti (ei lasketa)',
+      fallbackNote: 'Ilmoituksesta ei tunnistettu vaatimuslauseita, joten prosentti lasketaan koko ilmoituksen sanoista.',
       reqSummary: function (f, t) { return f + ' / ' + t + ' vaatimuksesta täyttyy (vähintään puolet sen avainsanoista löytyy CV:stä).'; },
       announce: function (s) { return 'Vertailu valmis: ' + s + ' %.'; },
       more: function (n) { return '+ ' + n + ' lisää'; },
@@ -67,7 +70,10 @@
       errAd: 'Paste the job ad.',
       errCv: 'Paste your CV.',
       errNoKeywords: 'No comparable words were found in the job ad.',
-      scoreText: function (f, t) { return f + ' / ' + t + ' keywords from the ad were found in your CV.'; },
+      scoreText: function (f, t) { return f + ' / ' + t + ' keywords from the requirements were found in your CV.'; },
+      scoreTextAll: function (f, t) { return f + ' / ' + t + ' keywords from the ad were found in your CV.'; },
+      other: 'Other ad text (not counted)',
+      fallbackNote: 'No requirement sentences were recognised, so the percentage uses all words in the ad.',
       reqSummary: function (f, t) { return f + ' / ' + t + ' requirements met (at least half of their keywords appear in your CV).'; },
       announce: function (s) { return 'Comparison done: ' + s + '%.'; },
       more: function (n) { return '+ ' + n + ' more'; },
@@ -104,7 +110,11 @@
     'minä minun minua minulla minulle minulta minussa sinä sinun sinua sinulla sinulle sinulta sinussa sinusta sinuun ' +
     'hän hänen häntä hänellä hänelle me meidän meitä meillä meille meiltä meihin meissä meistä ' +
     'te teidän teitä teillä teille teiltä he heidän heitä heillä heille ' +
-    'oma omaa oman omat omia omien omalla omassa omaan ' +
+    'oma omaa oman omat omia omien omalla omassa omaan omasta työt käy kertomana lukemassa ' +
+    // Words that mark a requirement but say nothing about the skill itself.
+    'halu halua kyky kykyä mahdollisuus mahdollisuuden lasketaan eduksesi eduksenne tärkeintä tärkeää kohtaan ' +
+    'toimia asioita työssä työsi työssäsi aito aidosti ala alaa alalla alalta alan kiinnostus kiinnostusta ' +
+    'puh ota etsimämme etsimäsi työkaveri työkaverin työkaveriksi henkilö henkilöä henkilön tekijä tekijää ' +
     'hyvin hyvä hyvää hyvät hyviä hyvien erittäin todella paljon eri kaikki kaikkia kaiken kaikkien jokin jotain jotakin muu muut muita muiden ' +
     'esim yms jne mm ns ym noin yli alle kanssa mukaan kautta ennen jälkeen aikana lisäksi kohti vuoksi takia välillä vai voi voit voivat voida voisi ' +
     'tulee tulisi tulla pitää saa saada saat saamme ' +
@@ -184,6 +194,10 @@
   var CAPS_KEEP = { it: true, us: true };
   // Very short skill names, kept when capitalised (C, R, Go, Qt).
   var SHORT_SKILLS = { c: true, r: true, go: true, qt: true };
+  // Finnish passive and instructive verb forms describe the work, not a skill to look for:
+  // vastaanotetaan, tarvitaan, siirrellään, kumarrellen, kurkottaen. Nouns such as
+  // "tietokantaan" (n before -taan) are not caught.
+  var VERB_FORM_RE = /(?:[aeiouyäö]t(?:aan|ään)|[aeiouyäö]d(?:aan|ään)|[aeiouyäö]ll(?:aan|ään)|[aä]en|[eiä]llen)$/;
 
   // ---------- Text processing ----------
 
@@ -275,6 +289,7 @@
     if (SHORT_SKILLS[w]) return raw.charAt(0) !== raw.charAt(0).toLowerCase();
     if (STOP[w]) return caps && !!CAPS_KEEP[w];
     if (hasStopPrefix(w) || isCompany(w)) return false;
+    if (w.length >= 7 && VERB_FORM_RE.test(w)) return false;
     if (w.length >= 3) return true;
     // Two-letter tokens only when they look like an acronym or symbol (UX, HR, C#)
     return w.length === 2 && (caps || /[+#]/.test(w));
@@ -316,6 +331,7 @@
   // Shorter words only match with a plain inflection ending (työ → työtä).
   var MIN_PREFIX = 5;
   var MAX_COMPOUND = 40;
+  var MAX_GROUP_SCAN = 300;
   var COMPOUND_JOINT = /[aeiouyäöns]/;
 
   // Endings a short word may get: työ → työtä, työssä; app → apps.
@@ -435,18 +451,128 @@
   }
 
   var BULLET_RE = /^\s*(?:[-–—•*·▪●◦►]|\d{1,2}[.)])\s+/;
-  var SENTENCE_RE = /(?<!\b(?:e\.g|i\.e|esim|mm|ns|ym|jne|yms|etc))(?<=[.!?;])\s+|\r?\n+/i;
+  // Sentence ends, but not after abbreviations (esim., mm.) or dates (31.10.).
+  var SENTENCE_RE = /(?<!\b(?:e\.g|i\.e|esim|mm|ns|ym|jne|yms|tms|etc|ks|n|klo|puh)\.)(?<!\d\.)(?<=[.!?;])\s+|\r?\n+/i;
 
-  function requirementLines(ad) {
-    var lines = ad.split(/\r?\n/);
-    var bullets = lines.filter(function (l) { return BULLET_RE.test(l); })
-      .map(function (l) { return l.replace(BULLET_RE, '').trim(); })
-      .filter(Boolean);
-    if (bullets.length) return bullets;
-    // No bullet list: fall back to sentences.
-    return ad.split(SENTENCE_RE)
-      .map(function (s) { return s.trim(); })
-      .filter(function (s) { return s && s.length <= 300; });
+  // ---------- Sentence types ----------
+
+  // A heading such as "Sinulla on:" or "Edellytämme" starts a requirement section.
+  var REQ_HEADING_RE = /(sinulla on|jolla on|sinulta löytyy|edellytämme|edellytetään|toivomme|odotamme|arvostamme|vaadimme|vaatimukse|eduksi|plussaa|osaamista|(?:^|\s)profiili(?:si)?\b|you have|you bring|about you|who you are|looking for|your profile|requirements|we expect|we hope|qualifications|nice to have|must have)/i;
+  // A heading such as "Tarjoamme:" starts a section that is not about the applicant.
+  var OFFER_HEADING_RE = /(tarjoamme|meiltä saat|saat meiltä|edut|työsuhde-ed|we offer|benefits|what you get|about us|meistä)/i;
+  // Headings without a colon must be short and consist of the heading phrase only.
+  var BARE_HEADING_RE = /^(?:mitä\s+)?(?:sinulla on|toivomme|edellytämme|odotamme|arvostamme|vaatimukset|eduksi katsotaan|tarjoamme|meiltä saat|edut|työsuhde-edut|requirements|qualifications|nice to have|about you|your profile|we offer|benefits)(?:\s+(?:sinulta|meiltä|you))?$/i;
+  // A sentence that opens with an offer is about the employer, whatever words follow.
+  var OFFER_START_RE = /^(?:tarjoamme|meiltä saat|saat meiltä|we offer|you will get|you get)\b/i;
+
+  // Words that make any sentence a requirement: kokemus, taito, kyky, halu, osaaminen, eduksi, edellytys…
+  var REQ_PARTS = ['kokemu', 'taito', 'taido', 'taidoi', 'osaami', 'koulutu', 'tutkinto', 'pätevyy', 'kortti',
+    'skill', 'knowledge', 'degree', 'qualif'];
+  var REQ_STARTS = ['eduksi', 'eduks', 'edellyty', 'edellytä', 'edellyte', 'edellytt', 'vaatimu', 'vaaditaan',
+    'required', 'requirement', 'abilit', 'experience', 'fyysi'];
+  // Licences called "passi": hygieniapassi, anniskelupassi (not passionate, kompassi, ePassi).
+  var REQ_PASSI_RE = /^(?:hygienia|anniskelu|alkoholi|tulityö|työturvallisuus|tieturva|ensiapu)passi/u;
+  var REQ_HALU_RE = /^halu(?:a|n|ja|kas|kkuu\p{L}*|kkaa\p{L}*)?$/u;
+  // kyky as a word or a skill compound (yhteistyökyky), not kilpailukykyinen.
+  var REQ_KYKY_RE = /^(?:yhteistyö|vuorovaikutus|ongelmanratkaisu|oppimis|paineensieto|esiintymis|organisointi|johtamis|sopeutumis)?(?:kyky|kyvy|kyvyk)/u;
+  // Not a requirement although it contains one of the parts: asiakaskokemus is about customers.
+  // Benefits cards are not requirements either (lounaskortti, liikuntakortti).
+  var NOT_REQ = ['asiakaskokemu', 'käyttäjäkokemu', 'ostokokemu', 'lounas', 'liikunta', 'virike', 'kulttuuri', 'epassi', 'smartum'];
+
+  function isReqWord(w, prev) {
+    for (var k = 0; k < NOT_REQ.length; k++) if (w.indexOf(NOT_REQ[k]) === 0) return false;
+    if (w === 'experience' && (prev === 'customer' || prev === 'user')) return false;
+    if (REQ_HALU_RE.test(w) || REQ_KYKY_RE.test(w) || REQ_PASSI_RE.test(w)) return true;
+    for (var i = 0; i < REQ_PARTS.length; i++) if (w.indexOf(REQ_PARTS[i]) !== -1) return true;
+    for (var j = 0; j < REQ_STARTS.length; j++) if (w.indexOf(REQ_STARTS[j]) === 0) return true;
+    return false;
+  }
+
+  // Sentences about applying are dropped entirely. Strong words always mean
+  // applying; weak ones only together with an applying verb or outside requirements
+  // ("Kokemus hakemusten käsittelystä" is a requirement).
+  var APPLY_STRONG = ['roskapost', 'hakupäiv', 'hakuaj', 'hakuai', 'hakulomak', 'hakuohj', 'hakulink',
+    'hakuilmoit', 'rekrytointiviest'];
+  var APPLY_WEAK = ['hakemu', 'hakuprosess', 'viimeistään', 'mennessä', 'application'];
+  // Contact details are dropped unless the sentence names a requirement.
+  var CONTACT_WORDS = ['yhteyttä', 'yhteydenot', 'lisätiedo', 'lisätieto'];
+  var APPLY_VERBS = ['lähetä', 'lähettä', 'hae', 'hakea', 'jätä', 'jättä', 'täytä', 'tarkkail', 'tarkista', 'kurkat',
+    'kurkkaa', 'send', 'apply', 'submit'];
+  var EMAIL_WORD_RE = /^sähköpost(?:i|ia|iasi|isi|in|illa|illasi|itse|iin|iosoit\p{L}*)$/u;
+
+  function startsWithAny(w, list) {
+    for (var i = 0; i < list.length; i++) if (w.indexOf(list[i]) === 0) return true;
+    return false;
+  }
+
+  function sentenceKind(text, section, inReq) {
+    var words = tokenize(text).map(function (t) { return t.word; });
+    var strong = false, weak = false, contact = false, verb = false, req = false;
+    ADDRESS_RE.lastIndex = 0;
+    if (ADDRESS_RE.test(text)) contact = true;
+    ADDRESS_RE.lastIndex = 0;
+    words.forEach(function (w, i) {
+      if (startsWithAny(w, APPLY_STRONG)) strong = true;
+      if (startsWithAny(w, APPLY_WEAK) || EMAIL_WORD_RE.test(w)) weak = true;
+      if (startsWithAny(w, CONTACT_WORDS) || w === 'puh') contact = true;
+      if (startsWithAny(w, APPLY_VERBS)) verb = true;
+      if (isReqWord(w, words[i - 1])) req = true;
+    });
+    if (strong || (weak || contact) && verb || weak && !req && !inReq || contact && !req) return 'apply';
+    if (section === 'offer' || OFFER_START_RE.test(text)) return 'other';
+    return req || inReq ? 'req' : 'other';
+  }
+
+  // Does the text contain at least one countable keyword?
+  function hasKeyword(text) {
+    return tokenize(text).some(isKeyword);
+  }
+
+  // Splits the ad into sentences and labels each one 'req', 'other' or 'apply'.
+  // A section lasts until the next heading. A bullet list also ends at the first
+  // plain-text line after it, which is usually something else (company intro, contacts).
+  function segmentAd(ad) {
+    var out = [];
+    var section = null; // 'req', 'offer', 'none' or null
+    var sectionHasBullets = false;
+    ad.split(/\r?\n/).forEach(function (line) {
+      var text = line.trim();
+      if (!text) return;
+      var bullet = BULLET_RE.test(line);
+      if (bullet) text = line.replace(BULLET_RE, '').trim();
+      if (!bullet && sectionHasBullets) { section = null; sectionHasBullets = false; }
+
+      // "Sinulla on: B-ajokortti ja hygieniapassi." on one line.
+      var inline = !bullet && /^([^:]{1,60}):\s*(\S.*)$/.exec(text);
+      if (inline && REQ_HEADING_RE.test(inline[1])) {
+        out.push({ text: text, kind: sentenceKind(inline[2], 'req', true) });
+        return;
+      }
+
+      var heading = !bullet && (/:\s*$/.test(text) || BARE_HEADING_RE.test(text));
+      if (heading) {
+        var words = tokenize(text).map(function (t) { return t.word; });
+        var aboutApplying = words.some(function (w) {
+          return startsWithAny(w, APPLY_STRONG) || startsWithAny(w, APPLY_WEAK) || startsWithAny(w, CONTACT_WORDS);
+        });
+        section = aboutApplying ? 'none' : REQ_HEADING_RE.test(text) ? 'req' : OFFER_HEADING_RE.test(text) ? 'offer' : 'none';
+        sectionHasBullets = false;
+        // "…jos olet täysi-ikäinen ja sinulla on:" carries a requirement of its own,
+        // "Vaatimukset:" does not.
+        var own = section === 'req' && hasKeyword(text.replace(new RegExp(REQ_HEADING_RE.source, 'gi'), ' '));
+        out.push({ text: text, kind: own ? 'req' : 'other' });
+        return;
+      }
+      if (bullet) sectionHasBullets = true;
+
+      var pieces = bullet ? [text] : text.split(SENTENCE_RE).map(function (s) { return s.trim(); }).filter(Boolean);
+      pieces.forEach(function (s) {
+        // Bullet points count as requirements unless they list what the employer offers.
+        var inReq = section === 'req' || bullet && section !== 'offer';
+        out.push({ text: s, kind: sentenceKind(s, section, inReq) });
+      });
+    });
+    return out;
   }
 
   function analyse(ad, cv) {
@@ -481,7 +607,8 @@
       var list = groupBuckets[key] || (groupBuckets[key] = []);
       var g = null;
       if (d.length >= 3) {
-        for (var i = 0; i < list.length; i++) {
+        // Capped so that thousands of similar words cannot freeze the page.
+        for (var i = 0; i < list.length && i < MAX_GROUP_SCAN; i++) {
           var other = list[i].word;
           if (Math.abs(other.length - word.length) <= 3 && wordsMatch(word, other) && wordsMatch(other, word)) { g = list[i]; break; }
         }
@@ -497,11 +624,22 @@
       return g;
     }
 
-    tokenize(ad).forEach(function (t) {
-      if (isKeyword(t)) groupFor(t.word, t.raw).count++;
+    // Only requirement sentences are scored. If none are recognised,
+    // every sentence except the application instructions is used instead.
+    var segments = segmentAd(ad);
+    var reqSentences = segments.filter(function (s) { return s.kind === 'req'; });
+    var fallback = !reqSentences.length;
+    if (fallback) reqSentences = segments.filter(function (s) { return s.kind !== 'apply'; });
+    var others = fallback ? [] : segments.filter(function (s) { return s.kind === 'other'; })
+      .map(function (s) { return s.text; });
+
+    reqSentences.forEach(function (s) {
+      tokenize(s.text).forEach(function (t) {
+        if (isKeyword(t)) groupFor(t.word, t.raw).count++;
+      });
     });
 
-    var reqs = requirementLines(ad).map(function (line) {
+    var reqs = reqSentences.map(function (s) { return s.text; }).map(function (line) {
       var parts = [];
       var pos = 0;
       var total = 0, found = 0;
@@ -537,6 +675,8 @@
       found: foundGroups,
       missing: missingGroups,
       reqs: reqs,
+      others: others,
+      fallback: fallback,
       score: groups.length ? Math.round(100 * foundGroups.length / groups.length) : 0
     };
   }
@@ -609,7 +749,7 @@
   function render(r) {
     $('score-value').textContent = r.score;
     $('score-bar').style.width = r.score + '%';
-    $('score-text').textContent = t('scoreText')(r.found.length, r.total);
+    $('score-text').textContent = t(r.fallback ? 'scoreTextAll' : 'scoreText')(r.found.length, r.total);
 
     var reqBlock = $('req-block');
     var reqList = $('req-list');
@@ -634,6 +774,13 @@
     } else {
       reqBlock.hidden = true;
     }
+    $('fallback-note').hidden = !r.fallback;
+
+    var otherList = $('other-list');
+    otherList.replaceChildren();
+    $('other-block').hidden = !r.others.length;
+    r.others.slice(0, MAX_REQS).forEach(function (s) { otherList.appendChild(el('li', 'other', s)); });
+    if (r.others.length > MAX_REQS) otherList.appendChild(el('li', 'empty', t('more')(r.others.length - MAX_REQS)));
 
     $('found-count').textContent = '(' + r.found.length + ')';
     $('missing-count').textContent = '(' + r.missing.length + ')';

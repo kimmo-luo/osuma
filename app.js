@@ -190,7 +190,7 @@
     'june', 'july', 'august', 'september', 'october', 'november', 'december'
   ];
 
-  // Email addresses, web addresses and bare domains (tokmanni.fi/ura) are skipped.
+  // Email addresses, web addresses and bare domains (yritys.fi/ura) are skipped.
   // No i flag: a bare domain needs a lowercase ending, so "palvelusta.Se" and "ASP.NET" stay words.
   // Lengths are bounded so a huge pasted token cannot make the regex crawl.
   var ADDRESS_RE = /[^\s@]{1,64}@[^\s@]{1,255}|(?:[hH][tT][tT][pP][sS]?:\/\/|[wW]{3}\.)\S+|[\p{L}\p{N}-]{1,63}(?:\.[\p{L}\p{N}-]{1,63}){0,4}\.(?:fi|com|net|org|eu|se|info|biz)(?![\p{L}\p{N}])(?:\/\S*)?/gu;
@@ -273,7 +273,7 @@
   }
 
   // The employer's name, guessed from the ad's email and web addresses
-  // (rekry@tokmanni.fi → tokmanni) and from "Name Oy". Set by analyse().
+  // (rekry@kauppala.fi → kauppala) and from "Name Oy". Set by analyse().
   var companies = [];
 
   // How many words in the text start with `name`.
@@ -307,7 +307,7 @@
     return found;
   }
 
-  // The company name itself or with a short ending (Tokmannilla), not every
+  // The company name itself or with a short ending (Kauppalassa), not every
   // word that starts with it (Kone ≠ konetekniikka).
   function isCompany(w) {
     var d = degrade(w);

@@ -21,7 +21,9 @@
       example: 'Esimerkki',
       clear: 'Tyhjennä',
       results: 'Tulos',
-      requirements: 'CV:hen kuuluvat vaatimukset',
+      requirements: 'CV:hen kuuluvat vaatimukset ja tehtävät',
+      availTitle: 'Saatavuus (vastaa vain, jos lomake kysyy)',
+      availNote: 'Työajat, vuorot, ikä ja aloitusaika. Nämä eivät vaikuta prosentteihin.',
       letterLabel: 'Hakemuskirje (vapaaehtoinen)',
       letterHint: 'Jos liität kirjeen, Osuma tarkistaa siitä luonteeseen, asenteeseen ja motivaatioon liittyvät vaatimukset.',
       letterPlaceholder: 'Liitä hakemuskirjeesi teksti tähän…',
@@ -76,7 +78,9 @@
       example: 'Example',
       clear: 'Clear',
       results: 'Result',
-      requirements: 'Requirements for the CV',
+      requirements: 'Requirements and duties for the CV',
+      availTitle: 'Availability (answer only if the form asks)',
+      availNote: 'Working hours, shifts, age and start date. These do not affect the percentages.',
       letterLabel: 'Cover letter (optional)',
       letterHint: 'If you add your letter, Osuma checks it for the requirements about personality, attitude and motivation.',
       letterPlaceholder: 'Paste your cover letter text here…',
@@ -150,6 +154,10 @@
     // Words that mark a requirement but say nothing about the skill itself.
     'halu halua kyky kykyä mahdollisuus mahdollisuuden lasketaan eduksesi eduksenne tärkeintä tärkeää kohtaan ' +
     'toimia asioita työssä työsi työssäsi aito aidosti ala alaa alalla alalta alan kiinnostus kiinnostusta ' +
+    'kuuluu kuuluvat keskittyvät keskittyy pääset pääsee tärkeä erilaisissa erilaisia toisiamme autamme apua ' +
+    'tehtävä tehtävät tehtävää tehtäviin tehtäväsi tehtävissä työtäsi työhösi tuote tuotteet tuotteita tuotteiden ' +
+    'toteutus toteutusta huolehtiminen huolehtimista kysymyksissä asioivien osastopuolen ' +
+    'taito taidot taitoja osaaminen osaamista ' +
     'muttei pakollinen pakollista välttämätön välttämätöntä välttämättä puh ota etsimämme etsimäsi työkaveri työkaverin työkaveriksi henkilö henkilöä henkilön tekijä tekijää ' +
     'hyvin hyvä hyvää hyvät hyviä hyvien erittäin todella paljon eri kaikki kaikkia kaiken kaikkien jokin jotain jotakin muu muut muita muiden ' +
     'esim yms jne mm ns ym noin yli alle kanssa mukaan kautta ennen jälkeen aikana lisäksi kohti vuoksi takia välillä vai voi voit voivat voida voisi ' +
@@ -220,7 +228,7 @@
     'over under all any some each both either neither etc e.g i.e eg ie plus well able strong good great excellent ideally preferably ' +
     'looking seeking join apply applicants candidate candidates role position opportunity offer offers including include includes ' +
     'within across per via there here just only own one ' +
-    'requirements required nice least year years minimum hi hello thanks always often soon new two three'
+    'requirements required nice least year years minimum hi hello thanks always often soon new two three skill skills'
   ).split(/\s+/);
 
   var STOP = Object.create(null);
@@ -517,8 +525,10 @@
   }
 
   var BULLET_RE = /^\s*(?:[-–—•*·▪●◦►]|\d{1,2}[.)])\s+/;
-  // Sentence ends, but not after abbreviations (esim., mm.) or dates (31.10.).
-  var SENTENCE_RE = /(?<!\b(?:e\.g|i\.e|esim|mm|ns|ym|jne|yms|tms|etc|ks|n|klo|puh)\.)(?<!\d\.)(?<=[.!?;])\s+|\r?\n+/i;
+  // Sentence ends: not after abbreviations (esim., mm.), and not before a lowercase word,
+  // so "31.10. mennessä" stays together but "Tehtävä alkaa 1.11. Työssä…" splits.
+  // No i flag: with it, \p{Ll} would match capitals too.
+  var SENTENCE_RE = /(?<!\b(?:[eE]\.g|[iI]\.e|[eE]sim|[mM]m|[nN]s|ym|jne|yms|tms|etc|[kK]s|klo|[pP]uh)\.)(?<=[.!?;])\s+(?!\p{Ll})|\r?\n+/u;
 
   // ---------- Sentence types ----------
 
@@ -529,7 +539,7 @@
   // Headings without a colon must be short and consist of the heading phrase only.
   var BARE_HEADING_RE = /^(?:mitä\s+)?(?:sinulla on|toivomme|edellytämme|odotamme|arvostamme|vaatimukset|eduksi katsotaan|tarjoamme|meiltä saat|edut|työsuhde-edut|requirements|qualifications|nice to have|about you|your profile|we offer|benefits)(?:\s+(?:sinulta|meiltä|you))?$/i;
   // A sentence that opens with an offer is about the employer, whatever words follow.
-  var OFFER_START_RE = /^(?:tarjoamme|meiltä saat|saat meiltä|we offer|you will get|you get)\b/i;
+  var OFFER_START_RE = /^(?:tarjoamme|meiltä saat|saat meiltä|we offer|you will get|you get)\b|^työssä(?:si)?\s+pääset\s+(?:kehittä|oppi|etene|nautti|kouluttau)/i;
 
   // Words that make any sentence a requirement: kokemus, taito, kyky, halu, osaaminen, eduksi, edellytys…
   var REQ_PARTS = ['kokemu', 'taito', 'taido', 'taidoi', 'osaami', 'koulutu', 'tutkinto', 'pätevyy', 'kortti',
@@ -594,6 +604,47 @@
     return tokenize(text).some(isKeyword);
   }
 
+  // ---------- Duties and availability ----------
+
+  // Real duty headings only: "Tehtävät:", "Tehtäviisi kuuluu:", "Työnkuva", "Responsibilities".
+  // "Etsimme tehtävään:" introduces requirements, not duties.
+  var DUTY_HEADING_RE = /^(?:työ)?(?:tehtävä(?:t|si|nkuva)?|tehtäviisi)(?!\p{L})|^työnkuva|^vastuualue|^responsibilit|^what you.ll do|^your role|^duties/iu;
+  // Sentences that describe the work itself. A phrase is needed, not just the word
+  // "tehtävä" ("Tehtävä alkaa 1.11.", "Tehtävään valitulta edellytämme" are not duties).
+  // "Työssä pääset kehittämään osaamistasi" is a benefit, so learning verbs are left out.
+  var DUTY_RE = new RegExp([
+    '^(?:työ)?tehtävä(?:t|si|nne)?\\s+(?:kuuluu|kuuluvat|keskittyv|sisältäv|ovat\\s+(?:mm|esim|muun))',
+    '(?:^|\\s)(?:työ)?tehtäv(?:iin|iisi)\\s+kuulu',
+    'työhö(?:n|si)\\s+kuulu', 'työnkuvaa(?:n|si)\\s+kuulu', 'osa\\s+työtäsi', 'vastuullasi', '^vastaat\\s',
+    'työssä(?:si)?\\s+pääse\\p{L}*\\s+(?!kehittä|oppi|etene|nautti|kouluttau)',
+    '^you will\\s+(?!get\\b|be part|join|receive|have\\b|enjoy|be offered|work with a great)',
+    'your tasks', '^duties', '^responsibilit'
+  ].join('|'), 'iu');
+
+  function isDuty(text) { return DUTY_RE.test(text.trim()); }
+
+  // Working hours, shifts, weekends, age and start date. Answered only if a form asks.
+  var AVAIL_STARTS = ['työvuoro', 'vuorotyö', 'arkisin', 'viikonlop', 'iltaisin', 'öisin', 'iltavuoro', 'yövuoro',
+    'aamuvuoro', 'päivävuoro', 'tuntimäär', 'työaika', 'työaja', 'lisätunt', 'tunneista', 'tuntia', 'täysi-ikäi',
+    'aloitus', 'alkavat', 'määräaik', 'osa-aika', 'kokoaika', 'full-time', 'part-time'];
+  // Whole words only: "shifting priorities" is not about shifts.
+  var AVAIL_WORD_RE = /^(?:shifts?|weekends?|evenings)$/;
+  // "24 hours" in a support duty is not working time, so hours need a week or "working".
+  var AVAIL_TEXT_RE = /\d+\s*(?:h|t|tuntia)\s*\/\s*(?:vko|viikko|week)|\bh\/vko\b|kuukauden mittai|sopimuksen mukaan|\bover 18\b|\b18 vuotta\b|working hours|hours\s*(?:per|a|\/)\s*week|start date/i;
+
+  function isAvailability(text) {
+    if (AVAIL_TEXT_RE.test(text)) return true;
+    return tokenize(text).some(function (t) { return startsWithAny(t.word, AVAIL_STARTS) || AVAIL_WORD_RE.test(t.word); });
+  }
+
+  // Experience, education, a licence or a system: a CV matter even next to shift words
+  // ("Kokemus vuorotyöstä").
+  function hasStrongCv(text) {
+    return tokenize(text).some(function (t) {
+      return !isTraitWord(t.word) && isCvWord(t.word) && !WEAK_CV_RE.test(t.word);
+    });
+  }
+
   // Splits the ad into sentences and labels each one 'req', 'other' or 'apply'.
   // A section lasts until the next heading. A bullet list also ends at the first
   // plain-text line after it, which is usually something else (company intro, contacts).
@@ -621,12 +672,13 @@
         var aboutApplying = words.some(function (w) {
           return startsWithAny(w, APPLY_STRONG) || startsWithAny(w, APPLY_WEAK) || startsWithAny(w, CONTACT_WORDS);
         });
-        section = aboutApplying ? 'none' : REQ_HEADING_RE.test(text) ? 'req' : OFFER_HEADING_RE.test(text) ? 'offer' : 'none';
+        section = aboutApplying ? 'none' : REQ_HEADING_RE.test(text) ? 'req' : OFFER_HEADING_RE.test(text) ? 'offer' :
+          DUTY_HEADING_RE.test(text) ? 'duty' : 'none';
         sectionHasBullets = false;
         // "…jos olet täysi-ikäinen ja sinulla on:" carries a requirement of its own,
         // "Vaatimukset:" does not.
         var own = section === 'req' && hasKeyword(text.replace(new RegExp(REQ_HEADING_RE.source, 'gi'), ' '));
-        out.push({ text: text, kind: own ? 'req' : 'other' });
+        out.push({ text: text, kind: own ? 'req' : 'other', heading: !own });
         return;
       }
       if (bullet) sectionHasBullets = true;
@@ -635,7 +687,7 @@
       pieces.forEach(function (s) {
         // Bullet points count as requirements unless they list what the employer offers.
         var inReq = section === 'req' || bullet && section !== 'offer';
-        out.push({ text: s, kind: sentenceKind(s, section, inReq) });
+        out.push({ text: s, kind: sentenceKind(s, section, inReq), section: section });
       });
     });
     return out;
@@ -659,12 +711,12 @@
     'kiinnostu', 'asenne', 'asentee', 'innostu', 'motivaatio', 'motivoitu', 'täsmälli', 'luotettav', 'joustav',
     'palveluhenk', 'tiimihenk', 'tiimipelaaja', 'stressinsieto', 'paineensieto', 'huumori', 'liikkuvuu', 'vauhdik',
     'työskentelytyyl', 'rehelli', 'avulia', 'ystävälli', 'kohteliai', 'kehitty', 'sitoutu', 'vastuullis', 'huolelli',
-    'järjestelmällis', 'työvuoro', 'vuorotyö', 'viikonlop', 'oppimishal',
+    'järjestelmällis', 'oppimishal',
     'positive', 'motivat', 'attitude', 'enthusias', 'proactive', 'self-start', 'interpersonal', 'passion',
-    'reliable', 'flexib', 'cheerful', 'weekend', 'communicat'];
+    'reliable', 'flexib', 'cheerful', 'communicat'];
   // Trait words checked at the start of a word only: iloinen (not tiloissa), kunto (not kuntoutus),
   // energinen (not energia-ala), sosiaalinen (not sosiaalihuolto), friendly (not user-friendly).
-  var LETTER_WORD_RE = /^(?:iloi|innok|reipas|reippa|ahker|sosiaalis|sosiaalinen|energi(?!a)|tehokka|loppuun|fyysi|kunto(?!ut|sal)|kunnossa|arkisin|iltaisin|friendly|player|shift)/u;
+  var LETTER_WORD_RE = /^(?:iloi|innok|reipas|reippa|ahker|sosiaalis|sosiaalinen|energi(?!a)|tehokka|loppuun|fyysi|kunto(?!ut|sal)|kunnossa|friendly|player)/u;
 
   function hasPart(w, parts) {
     for (var i = 0; i < parts.length; i++) if (w.indexOf(parts[i]) !== -1) return true;
@@ -700,6 +752,8 @@
       }
     });
     if (cvHit) return 'cv';
+    // Shifts, hours, age and start date are availability, not personality.
+    if (isAvailability(text)) return 'avail';
     if (letterHit) return 'letter';
     // A name-like word (Python, SQL, C#) is usually a skill; other pieces join a neighbour.
     return weakCvHit || otherHit ? 'cv' : 'none';
@@ -711,8 +765,10 @@
   // Words that only say "a skill of some kind".
   var WEAK_CV_RE = /^(?:osaami|taid|taito|skills?$|ammattitai)/u;
 
+  // 'cv', 'letter' or 'avail'.
   function clauseGroup(text) {
-    return clauseSignal(text) === 'letter' ? 'letter' : 'cv';
+    var s = clauseSignal(text);
+    return s === 'letter' || s === 'avail' ? s : 'cv';
   }
 
   // "Excel-osaaminen ja positiivinen asenne" or "Koulutus katsotaan eduksi, mutta
@@ -722,7 +778,9 @@
   // Not after a hyphen: "Atk- ja vuorovaikutustaidot" shares its last part.
   var CLAUSE_SEP_RE = /(;\s*|,\s+(?=(?:mutta|but|however)\b)|(?<!-)\s+(?:ja|sekä|and)\s+)/i;
   var CONJ_RE = /^(?:mutta|but|however)\s+/i;
-  function splitClauses(text) {
+  // `defaultKind`: what a piece without any signal counts as. For duties it is 'cv',
+  // so "Tehtäviisi kuuluu kassatyö ja iloinen asiakaspalvelu" keeps its duty part.
+  function splitClauses(text, defaultKind) {
     var bits = text.split(CLAUSE_SEP_RE);
     if (bits.length < 3) return [text];
     var out = []; // { text, kind }
@@ -730,6 +788,7 @@
       var piece = bits[i];
       var sep = i > 0 ? bits[i - 1] : '';
       var kind = clauseSignal(piece, i === 0);
+      if (kind === 'none' && defaultKind) kind = defaultKind;
       var last = out[out.length - 1];
       if (last && (kind === 'none' || last.kind === 'none' || kind === last.kind)) {
         last.text += sep + piece;
@@ -801,21 +860,39 @@
       return g;
     }
 
-    // Only requirement sentences are scored. If none are recognised,
+    // Requirement and duty sentences are scored. If none are recognised,
     // every sentence except the application instructions is used instead.
-    var segments = segmentAd(ad);
-    var reqSentences = segments.filter(function (s) { return s.kind === 'req'; });
-    var fallback = !reqSentences.length;
-    if (fallback) reqSentences = segments.filter(function (s) { return s.kind !== 'apply'; });
-    var others = fallback ? [] : segments.filter(function (s) { return s.kind === 'other'; })
-      .map(function (s) { return s.text; });
+    var segments = segmentAd(ad).filter(function (s) { return s.kind !== 'apply'; });
+    // Offers ("You will get…", "Tehtäväkohtainen palkka" under Tarjoamme) are never duties,
+    // and requirement sentences stay requirements.
+    segments.forEach(function (s) {
+      if (s.heading || s.kind === 'req' || s.section === 'offer' || OFFER_START_RE.test(s.text)) return;
+      if (s.section === 'duty' || isDuty(s.text)) s.duty = true;
+    });
+    var fallback = !segments.some(function (s) { return s.kind === 'req' || s.duty; });
 
-    // Each requirement clause goes either to the CV group or to the letter group.
     var cvClauses = [];
     var letterClauses = [];
-    reqSentences.forEach(function (s) {
-      splitClauses(s.text).forEach(function (c) {
-        (clauseGroup(c) === 'letter' ? letterClauses : cvClauses).push(c);
+    var availability = [];
+    var others = [];
+    segments.forEach(function (s) {
+      // Working hours, shifts, age and start date: shown apart, never scored.
+      // What the employer offers (vuorotyölisät) is not a question for the applicant.
+      var avail = s.section !== 'offer' && isAvailability(s.text) && !hasStrongCv(s.text);
+      if (s.kind === 'other' && !s.duty && !fallback) {
+        (avail ? availability : others).push(s.text);
+        return;
+      }
+      if (s.duty && avail) {
+        availability.push(s.text);
+        return;
+      }
+      // Requirements and duties are split into CV, letter and availability clauses.
+      // A duty clause without any trait or availability words stays in the CV group.
+      splitClauses(s.text, s.duty ? 'cv' : null).forEach(function (c) {
+        // A duty piece without trait or availability words is CV material.
+        var g = s.duty && clauseSignal(c) === 'none' ? 'cv' : clauseGroup(c);
+        (g === 'letter' ? letterClauses : g === 'avail' ? availability : cvClauses).push(c);
       });
     });
 
@@ -905,6 +982,7 @@
       missing: missingGroups,
       reqs: reqs,
       letterReqs: letterReqs,
+      availability: availability,
       hasLetter: hasLetter,
       others: others,
       fallback: fallback,
@@ -1028,6 +1106,9 @@
       return reqItem(q, 'miss', t('whereNone'));
     });
 
+    $('avail-block').hidden = !r.availability.length;
+    fillList($('avail-list'), r.availability, function (s) { return el('li', 'other', s); });
+
     var otherList = $('other-list');
     otherList.replaceChildren();
     $('other-block').hidden = !r.others.length;
@@ -1056,7 +1137,7 @@
     if (!ad) return showError('errAd');
     if (!cv) return showError('errCv');
     var r = analyse(ad, cv, $('letter').value);
-    if (!r.total && !r.letterReqs.length) return showError('errNoKeywords');
+    if (!r.total && !r.letterReqs.length && !r.availability.length) return showError('errNoKeywords');
     showError(null);
     lastResult = r;
     render(r);

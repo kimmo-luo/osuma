@@ -19,21 +19,22 @@ Osuma on ilmainen, selaimessa toimiva työkalu, joka vertaa työpaikkailmoitusta
 
 ### CV ja hakemuskirje tekevät eri asioita
 
-Vaatimukset jaetaan kahteen ryhmään:
+Vaatimukset ja tehtävät jaetaan kolmeen ryhmään:
 
-- **CV:hen kuuluvat**: taidot, kokemus, koulutus, kielet, kortit ja järjestelmät. **Prosentti lasketaan vain näistä.**
-- **Hakemukseen kuuluvat**: luonne, asenne ja halu, esim. iloinen, positiivinen, oma-aloitteinen, vuorovaikutustaidot, yhteistyökyky, halu kehittyä, vauhdikas työ, työvuorot, fyysinen kunto. Jos liität kirjeen, jokaisen kohdan vieressä näkyy, löytyykö se CV:stä, kirjeestä, molemmista vai ei kummastakaan. Ilman kirjettä nämä näytetään otsikolla **"Kerro nämä hakemuksessa"**.
+- **CV:hen kuuluvat**: taidot, kokemus, koulutus, kielet, kortit ja järjestelmät sekä työtehtävät ("Tehtäviisi kuuluu…", "Työhön kuuluu…", "Työssä pääset…"). **Prosentti lasketaan vain näistä.**
+- **Saatavuus (vastaa vain, jos lomake kysyy)**: työvuorot, arkisin ja viikonloppuisin, tuntimäärä, ikä ja aloitusaika näytetään omana harmaana ryhmänä. Ne eivät vaikuta prosentteihin.
+- **Hakemukseen kuuluvat**: luonne, asenne ja halu, esim. iloinen, positiivinen, oma-aloitteinen, vuorovaikutustaidot, yhteistyökyky, halu kehittyä, vauhdikas työ, fyysinen kunto. Jos liität kirjeen, jokaisen kohdan vieressä näkyy, löytyykö se CV:stä, kirjeestä, molemmista vai ei kummastakaan. Ilman kirjettä nämä näytetään otsikolla **"Kerro nämä hakemuksessa"**.
 
 Lause, jossa on sekä CV- että hakemusasioita, jaetaan kohdasta, jossa aihe vaihtuu (puolipiste, ", mutta", "ja", "sekä"): "Excel-osaaminen ja positiivinen asenne" → "Excel-osaaminen" CV:hen, "Positiivinen asenne" hakemukseen. Pelkkä yleissana kuten "taidot" ei vie luonteenpiirrettä CV-ryhmään ("vuorovaikutustaidot" on hakemusasia, "neuvottelutaidot" CV-asia).
 
 Tulos näyttää:
 
-- **prosenttiluvun**: kuinka suuri osa **vaatimuslauseiden** avainsanoista löytyy CV:stäsi
+- **prosenttiluvun**: kuinka suuri osa **CV:hen kuuluvien vaatimusten ja tehtävien** avainsanoista löytyy CV:stäsi
 - **vaatimukset**: vaatimuslauseet vihreänä, jos vähintään puolet niiden avainsanoista löytyy CV:stä, muuten punaisena
 - **avainsanat**: vaatimusten sanat, jotka löytyvät CV:stä (vihreä) tai puuttuvat (punainen)
-- **muu ilmoitusteksti (ei lasketa)**: esittely, tehtäväkuvaus ja edut harmaana
+- **muu ilmoitusteksti (ei lasketa)**: esittely ja edut harmaana
 
-Vaatimuslauseiksi tunnistetaan luettelokohdat, lauseet otsikoiden kuten "Sinulla on:", "Edellytämme" tai "Toivomme" jälkeen sekä lauseet, joissa on sana kuten kokemus, taito, kyky, halu, osaaminen, eduksi, edellytys, koulutus tai ajokortti. "Tarjoamme"-osion kohdat eivät ole vaatimuksia. Hakuohjeet (sähköposti, roskaposti, hakemuksen jättäminen, hakuaika) ja yhteystiedot poistetaan kokonaan. Jos ilmoituksesta ei löydy yhtään vaatimuslausetta, prosentti lasketaan koko ilmoituksesta ja siitä näytetään huomautus.
+Vaatimuslauseiksi tunnistetaan luettelokohdat, lauseet otsikoiden kuten "Sinulla on:", "Edellytämme" tai "Toivomme" jälkeen sekä lauseet, joissa on sana kuten kokemus, taito, kyky, halu, osaaminen, eduksi, edellytys, koulutus tai ajokortti. Tehtävälauseiksi tunnistetaan "Tehtävät"- ja "Tehtäviisi kuuluu" -otsikoiden kohdat sekä lauseet kuten "Tehtävät keskittyvät…", "Tehtäviin kuuluu…", "Työhön kuuluu…" ja "Työssä pääset palvelemaan…". "Tarjoamme"-osion kohdat ja edut ("Työssä pääset kehittämään osaamistasi") eivät ole vaatimuksia eivätkä tehtäviä. Hakuohjeet (sähköposti, roskaposti, hakemuksen jättäminen, hakuaika) ja yhteystiedot poistetaan kokonaan. Jos ilmoituksesta ei löydy yhtään vaatimuslausetta, prosentti lasketaan koko ilmoituksesta ja siitä näytetään huomautus.
 
 Suomen taivutus on huomioitu: sanoja verrataan niiden alun perusteella, joten esimerkiksi "myynti" löytää sanan "myyntityössä" ja "kokemus" sanan "kokemuksesta". Yhteisen alun pitää olla vähintään 5 merkkiä ja suurin osa sanasta; lyhyemmät sanat löytyvät vain tavallisen taivutuspäätteen kanssa (työ → työtä, mutta käy ≠ käyttö). Myös yleisimmät astevaihtelut (myynti/myynnin, kauppa/kaupan) huomioidaan.
 
@@ -89,21 +90,22 @@ Osuma (Finnish for "a hit") is a free, browser-based tool that compares a job ad
 
 ### The CV and the cover letter do different jobs
 
-Requirements are split into two groups:
+Requirements and duties are split into three groups:
 
-- **For the CV**: skills, experience, education, languages, licences and systems. **Only these are scored.**
-- **For the cover letter**: personality, attitude and motivation, e.g. cheerful, positive, proactive, interpersonal skills, teamwork, willingness to learn, fast-paced work, shifts, physical fitness. If you add your letter, each item shows whether it is found in the CV, the letter, both or neither. Without a letter they are listed under **"Mention these in your application"**.
+- **For the CV**: skills, experience, education, languages, licences and systems, plus the duties of the job ("Responsibilities", "Tehtäviisi kuuluu…"). **Only these are scored.**
+- **Availability (answer only if the form asks)**: shifts, weekdays and weekends, weekly hours, age and start date are shown as their own grey group and do not affect the percentages.
+- **For the cover letter**: personality, attitude and motivation, e.g. cheerful, positive, proactive, interpersonal skills, teamwork, willingness to learn, fast-paced work, physical fitness. If you add your letter, each item shows whether it is found in the CV, the letter, both or neither. Without a letter they are listed under **"Mention these in your application"**.
 
 A sentence mixing both kinds is split where the topic changes (semicolon, ", but", "and"): "Python skills and a positive attitude" → "Python skills" to the CV, "A positive attitude" to the letter. A generic word such as "skills" does not move a trait into the CV group ("communication skills" belongs in the letter, "negotiation skills" in the CV).
 
 The result shows:
 
-- **a percentage**: how many keywords of the **requirement sentences** appear in your CV
+- **a percentage**: how many keywords of the **requirements and duties for the CV** appear in your CV
 - **requirements**: requirement sentences, green if at least half of their keywords are in your CV, red otherwise
 - **keywords**: words from the requirements found in your CV (green) or missing from it (red)
-- **other ad text (not counted)**: introduction, duties and benefits, shown in grey
+- **other ad text (not counted)**: introduction and benefits, shown in grey
 
-Requirement sentences are bullet points, sentences after headings such as "Sinulla on:", "Edellytämme", "Toivomme" or "You have:", and sentences containing words such as kokemus, taito, kyky, halu, osaaminen, eduksi, edellytys, experience or skills. Items under "Tarjoamme" / "We offer" are not requirements. Application instructions (email, spam folder, submitting the application, deadline) and contact details are removed entirely. If no requirement sentence is found, the whole ad is scored and a note says so.
+Requirement sentences are bullet points, sentences after headings such as "Sinulla on:", "Edellytämme", "Toivomme" or "You have:", and sentences containing words such as kokemus, taito, kyky, halu, osaaminen, eduksi, edellytys, experience or skills. Duty sentences are items under headings such as "Tehtävät" or "Responsibilities" and sentences such as "Tehtäviin kuuluu…", "Työhön kuuluu…" or "Your tasks…". Items under "Tarjoamme" / "We offer" and benefits ("Työssä pääset kehittämään osaamistasi", "You will get…") are neither requirements nor duties. Application instructions (email, spam folder, submitting the application, deadline) and contact details are removed entirely. If no requirement sentence is found, the whole ad is scored and a note says so.
 
 Finnish inflection is taken into account: words are compared by their beginning, so "myynti" finds "myyntityössä" and "manage" finds "managing". The shared beginning must be at least 5 letters and most of the word; shorter words only match with a regular inflection ending (työ → työtä, but käy ≠ käyttö). Common Finnish consonant gradation (myynti/myynnin) is handled too.
 

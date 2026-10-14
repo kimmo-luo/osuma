@@ -19,11 +19,14 @@ Osuma on ilmainen, selaimessa toimiva työkalu, joka vertaa työpaikkailmoitusta
 
 ### CV ja hakemuskirje tekevät eri asioita
 
-Vaatimukset ja tehtävät jaetaan kolmeen ryhmään:
+Vaatimukset ja tehtävät jaetaan neljään ryhmään:
 
 - **CV:hen kuuluvat**: taidot, kokemus, koulutus, kielet, kortit ja järjestelmät sekä työtehtävät ("Tehtäviisi kuuluu…", "Työhön kuuluu…", "Työssä pääset…"). **Prosentti lasketaan vain näistä.**
 - **Saatavuus (vastaa vain, jos lomake kysyy)**: työvuorot, arkisin ja viikonloppuisin, tuntimäärä, ikä ja aloitusaika näytetään omana harmaana ryhmänä. Ne eivät vaikuta prosentteihin.
-- **Hakemukseen kuuluvat**: luonne, asenne ja halu, esim. iloinen, positiivinen, oma-aloitteinen, vuorovaikutustaidot, yhteistyökyky, halu kehittyä, vauhdikas työ, fyysinen kunto. Jos liität kirjeen, jokaisen kohdan vieressä näkyy, löytyykö se CV:stä, kirjeestä, molemmista vai ei kummastakaan. Ilman kirjettä nämä näytetään otsikolla **"Kerro nämä hakemuksessa"**.
+- **Hakemukseen kuuluvat**: luonne, asenne ja halu, esim. iloinen, positiivinen, oma-aloitteinen, vuorovaikutustaidot, yhteistyökyky, halu kehittyä, vauhdikas työ, fyysinen kunto. Luonnetta kuvaavat sanat ovat tiedostossa `sanasto.js` synonyymiryhminä, joten kirjeen "tulen toimeen erilaisten ihmisten kanssa" täyttää ilmoituksen "yhteistyökykyinen" ja "tavoitteellinen" täyttää "kilpailuvietin". Jos liität kirjeen, jokaisen kohdan vieressä näkyy, löytyykö se CV:stä, kirjeestä, molemmista vai ei kummastakaan. Ilman kirjettä nämä näytetään otsikolla **"Kerro nämä hakemuksessa"**.
+- **Plussaa**: "Eduksi katsotaan:" -osion kohdat ja lauseet kuten "Myyntikokemus on plussaa, mutta ei vaatimus" näytetään omana ryhmänään. Niiden vieressä on ✓, jos asia löytyy CV:stä, mutta ne eivät vaikuta prosenttiin.
+
+Jos ilmoituksessa ei ole kovia vaatimuksia (vuosien kokemus, tutkinto, kortti tai johtotehtävä), hakemukseen kuuluvat kohdat näytetään ensin, koska silloin asenne ja luonne painavat eniten. Jos CV:hen kuuluvia kohtia on alle kolme, prosentin alla on muistutus, ettei se kerro paljon.
 
 Lause, jossa on sekä CV- että hakemusasioita, jaetaan kohdasta, jossa aihe vaihtuu (puolipiste, ", mutta", "ja", "sekä"): "Excel-osaaminen ja positiivinen asenne" → "Excel-osaaminen" CV:hen, "Positiivinen asenne" hakemukseen. Pelkkä yleissana kuten "taidot" ei vie luonteenpiirrettä CV-ryhmään ("vuorovaikutustaidot" on hakemusasia, "neuvottelutaidot" CV-asia).
 
@@ -34,16 +37,17 @@ Tulos näyttää:
 - **avainsanat**: vaatimusten sanat, jotka löytyvät CV:stä (vihreä) tai puuttuvat (punainen)
 - **muu ilmoitusteksti (ei lasketa)**: esittely ja edut harmaana
 
-Vaatimuslauseiksi tunnistetaan luettelokohdat, lauseet otsikoiden kuten "Sinulla on:", "Edellytämme" tai "Toivomme" jälkeen sekä lauseet, joissa on sana kuten kokemus, taito, kyky, halu, osaaminen, eduksi, edellytys, koulutus tai ajokortti. Tehtävälauseiksi tunnistetaan "Tehtävät"- ja "Tehtäviisi kuuluu" -otsikoiden kohdat sekä lauseet kuten "Tehtävät keskittyvät…", "Tehtäviin kuuluu…", "Työhön kuuluu…" ja "Työssä pääset palvelemaan…". "Tarjoamme"-osion kohdat ja edut ("Työssä pääset kehittämään osaamistasi") eivät ole vaatimuksia eivätkä tehtäviä. Hakuohjeet (sähköposti, roskaposti, hakemuksen jättäminen, hakuaika) ja yhteystiedot poistetaan kokonaan. Jos ilmoituksesta ei löydy yhtään vaatimuslausetta, prosentti lasketaan koko ilmoituksesta ja siitä näytetään huomautus.
+Vaatimuslauseiksi tunnistetaan luettelokohdat, lauseet otsikoiden kuten "Sinulla on:", "Edellytämme", "Toivomme", "Mitä odotamme sinulta?", "Sovit meidän tiimiin, jos:", "Sinä olet" tai "Etsimme henkilöä, joka" jälkeen seuraavaan otsikkoon asti (myös puhekieliset "Sulla on", "Sä oot"), lauseet kuten "Etsimme reippaita, tuloshakuisia myyjiä" ja "Jos olet myyntihenkinen ja tavoitteellinen…" sekä lauseet, joissa on sana kuten kokemus, taito, kyky, halu, osaaminen, eduksi, edellytys, koulutus tai ajokortti. Tehtävälauseiksi tunnistetaan "Tehtävät"- ja "Tehtäviisi kuuluu" -otsikoiden kohdat sekä lauseet kuten "Tehtävät keskittyvät…", "Tehtäviin kuuluu…", "Tehtävänkuvaan sisältyy…", "Työhön kuuluu…" ja "Työssä pääset palvelemaan…". "Tarjoamme"-osion kohdat ja edut ("Työssä pääset kehittämään osaamistasi") eivät ole vaatimuksia eivätkä tehtäviä. Hakuohjeet (sähköposti, roskaposti, hakemuksen jättäminen, hakuaika) ja yhteystiedot poistetaan kokonaan. Jos ilmoituksesta ei löydy yhtään vaatimuslausetta, prosentti lasketaan koko ilmoituksesta ja siitä näytetään huomautus.
 
 Suomen taivutus on huomioitu: sanoja verrataan niiden alun perusteella, joten esimerkiksi "myynti" löytää sanan "myyntityössä" ja "kokemus" sanan "kokemuksesta". Yhteisen alun pitää olla vähintään 5 merkkiä ja suurin osa sanasta; lyhyemmät sanat löytyvät vain tavallisen taivutuspäätteen kanssa (työ → työtä, mutta käy ≠ käyttö). Myös yleisimmät astevaihtelut (myynti/myynnin, kauppa/kaupan) huomioidaan.
 
 Lisäksi:
 
 - Yhdyssanan loppuosa löytyy: "kokemus" löytää sanan "työkokemus".
-- Ilmoituksen yhdyssanan alkuosa riittää: "myyntihenkisyyttä" löytyy, kun CV:ssä on "myynti" (tai synonyymi "myyjä").
+- Ilmoituksen yhdyssanan alkuosa riittää: "myyntitaitoja" löytyy, kun CV:ssä on "myynti" (tai synonyymi "myyjä").
 - Emojit (✅ ym.) poistetaan riveiltä ennen vertailua. "Tarjoamme sinulle" -otsikon jälkeiset rivit ovat etuja seuraavaan otsikkoon asti, myös ilman kaksoispistettä.
 - Pieni kaupan alan synonyymilista: esim. esillelaitto = esillepano, hyllytys = hyllyttäminen, inventaario = inventointi.
+- Luonne- ja asennesanasto (`sanasto.js`, suomeksi ja englanniksi): esim. kilpailuvietti = tuloshakuinen = tavoitteellinen, sinnikäs = ei lannistu, rohkea = uskaltaa, oma-aloitteinen = reipas. Kieltosana kumoaa sanan ("en ole kovin rohkea" ei täytä rohkeutta). Sanaston alussa on ohje uusien sanojen lisäämiseen.
 - Pois jätetään täytesanat (*ja, on, sekä, että, joten, aina…*), hakuohjeiden sanat (hakemus, sähköpostilla, hakuaika, roskaposti…), kuukaudet ja päivämäärät, sähköposti- ja nettiosoitteet sekä yrityksen nimi, joka päätellään ilmoituksen osoitteista (rekry@yritys.fi) ja muodosta "Nimi Oy".
 
 ### Yksityisyys
@@ -57,7 +61,7 @@ Lisäksi:
 
 Versio 1 vertaa sanoja, ei merkityksiä:
 
-- Se tunnistaa vain pienen kaupan alan synonyymilistan, ei muita samaa tarkoittavia ilmauksia ("johtaminen" vs. "vedin tiimiä").
+- Se tunnistaa vain synonyymilistoissa olevat ilmaukset ("johtaminen" vs. "vedin tiimiä" ei täsmää). Luonnetta kuvaavista asioista sanasto kattaa yleisimmät, mutta omin sanoin kuvattu asia ("korjaan asian kysymättä") jää usein tunnistamatta.
 - Alkuun perustuva vertailu voi joskus antaa väärän osuman, kun eri sanat alkavat samoin (esim. englannin "international" ja "internal"). CV:n lyhyempi sana ei yleensä kelpaa ilmoituksen pidempään sanaan (CV:n "Java" ei täytä ilmoituksen "JavaScriptiä"), mutta lyhyt taivutuspääte hyväksytään, joten esim. "trukilla" täyttää "trukkikortin". Toisin päin osuma tulee aina, koska ilmoituksen "myynti" pitää löytää CV:n "myyntityössä".
 - Yhdyssanan osia etsitään CV:stä erikseen vain kielissä: "suomenkielellä" löytyy, kun CV:ssä on "suomi" ja "äidinkieli".
 - Jotta "kuntoa" ei löytäisi sanaa "kunnolla", astevaihtelu huomioidaan vasta neljän saman alkukirjaimen jälkeen. Siksi esim. kunta/kunnan ei täsmää.
@@ -92,11 +96,14 @@ Osuma (Finnish for "a hit") is a free, browser-based tool that compares a job ad
 
 ### The CV and the cover letter do different jobs
 
-Requirements and duties are split into three groups:
+Requirements and duties are split into four groups:
 
 - **For the CV**: skills, experience, education, languages, licences and systems, plus the duties of the job ("Responsibilities", "Tehtäviisi kuuluu…"). **Only these are scored.**
 - **Availability (answer only if the form asks)**: shifts, weekdays and weekends, weekly hours, age and start date are shown as their own grey group and do not affect the percentages.
-- **For the cover letter**: personality, attitude and motivation, e.g. cheerful, positive, proactive, interpersonal skills, teamwork, willingness to learn, fast-paced work, physical fitness. If you add your letter, each item shows whether it is found in the CV, the letter, both or neither. Without a letter they are listed under **"Mention these in your application"**.
+- **For the cover letter**: personality, attitude and motivation, e.g. cheerful, positive, proactive, interpersonal skills, teamwork, willingness to learn, fast-paced work, physical fitness. The trait words live in `sanasto.js` as synonym groups, so "I get along with different people" in the letter satisfies "team player" in the ad, and "goal-oriented" satisfies "competitive". If you add your letter, each item shows whether it is found in the CV, the letter, both or neither. Without a letter they are listed under **"Mention these in your application"**.
+- **Nice to have**: items under "Nice to have:" / "Eduksi katsotaan:" and sentences such as "Retail experience is a plus, but not required" are shown as their own group, with a ✓ when your CV has them. They do not affect the percentage.
+
+If the ad has no hard requirements (years of experience, a degree, a licence or a supervisor's role), the letter items are shown first, because attitude and personality then matter most. With fewer than three CV items, a note under the percentage says that it does not tell much.
 
 A sentence mixing both kinds is split where the topic changes (semicolon, ", but", "and"): "Python skills and a positive attitude" → "Python skills" to the CV, "A positive attitude" to the letter. A generic word such as "skills" does not move a trait into the CV group ("communication skills" belongs in the letter, "negotiation skills" in the CV).
 
@@ -107,16 +114,17 @@ The result shows:
 - **keywords**: words from the requirements found in your CV (green) or missing from it (red)
 - **other ad text (not counted)**: introduction and benefits, shown in grey
 
-Requirement sentences are bullet points, sentences after headings such as "Sinulla on:", "Edellytämme", "Toivomme" or "You have:", and sentences containing words such as kokemus, taito, kyky, halu, osaaminen, eduksi, edellytys, experience or skills. Duty sentences are items under headings such as "Tehtävät" or "Responsibilities" and sentences such as "Tehtäviin kuuluu…", "Työhön kuuluu…" or "Your tasks…". Items under "Tarjoamme" / "We offer" and benefits ("Työssä pääset kehittämään osaamistasi", "You will get…") are neither requirements nor duties. Application instructions (email, spam folder, submitting the application, deadline) and contact details are removed entirely. If no requirement sentence is found, the whole ad is scored and a note says so.
+Requirement sentences are bullet points, sentences after headings such as "Sinulla on:", "Edellytämme", "Toivomme", "Mitä odotamme sinulta?", "Sovit meidän tiimiin, jos:", "You have:" or "Who you are" until the next heading, sentences such as "Etsimme reippaita, tuloshakuisia myyjiä" or "We are looking for energetic people", and sentences containing words such as kokemus, taito, kyky, halu, osaaminen, eduksi, edellytys, experience or skills. Duty sentences are items under headings such as "Tehtävät" or "Responsibilities" and sentences such as "Tehtäviin kuuluu…", "Tehtävänkuvaan sisältyy…", "Työhön kuuluu…" or "Your tasks…". Items under "Tarjoamme" / "We offer" and benefits ("Työssä pääset kehittämään osaamistasi", "You will get…") are neither requirements nor duties. Application instructions (email, spam folder, submitting the application, deadline) and contact details are removed entirely. If no requirement sentence is found, the whole ad is scored and a note says so.
 
 Finnish inflection is taken into account: words are compared by their beginning, so "myynti" finds "myyntityössä" and "manage" finds "managing". The shared beginning must be at least 5 letters and most of the word; shorter words only match with a regular inflection ending (työ → työtä, but käy ≠ käyttö). Common Finnish consonant gradation (myynti/myynnin) is handled too.
 
 Also:
 
 - The last part of a compound is found: "kokemus" finds "työkokemus".
-- The first part of an ad compound is enough: "myyntihenkisyyttä" is found when the CV has "myynti" (or its synonym "myyjä").
+- The first part of an ad compound is enough: "myyntitaitoja" is found when the CV has "myynti" (or its synonym "myyjä").
 - Emojis (✅ etc.) are removed before comparing. Lines after a "Tarjoamme sinulle" / "We offer" heading are benefits until the next heading, with or without a colon.
 - A small retail synonym list: e.g. esillelaitto = esillepano, hyllytys = hyllyttäminen, inventaario = inventointi.
+- A personality and attitude vocabulary (`sanasto.js`, Finnish and English): e.g. competitive = results-driven = goal-oriented, persistent = never gives up, brave = not afraid, proactive = energetic. A negation cancels a word ("not very brave" does not count). The file starts with instructions for adding words.
 - Ignored: filler words (*and, the, ja, on, sekä, että, joten…*), Finnish application-instruction words (hakemus, sähköpostilla, hakuaika, roskaposti…), months and dates, email and web addresses, and the company name, which is inferred from the ad's addresses (jobs@company.fi) and from "Name Oy".
 
 ### Privacy
@@ -130,7 +138,7 @@ Also:
 
 Version 1 compares words, not meaning:
 
-- It only recognises a small retail synonym list, not other expressions with the same meaning ("leadership" vs. "led a team").
+- It only recognises expressions in its synonym lists ("leadership" vs. "led a team" does not match). The trait vocabulary covers the common ones, but a trait described in your own words ("I fix things without being asked") is often missed.
 - Prefix matching can occasionally give a false match when different words start the same way (e.g. "international" and "internal"). A shorter CV word usually does not count for a longer ad word ("Java" in the CV does not satisfy "JavaScript" in the ad), but a short inflection ending is accepted, so e.g. "trukilla" satisfies "trukkikortti". The other way round it always matches, because the ad's "myynti" must find "myyntityössä" in the CV.
 - Compound parts are looked up separately only for languages: "suomenkielellä" is found when the CV has "suomi" and "äidinkieli".
 - To keep "kuntoa" from matching "kunnolla", consonant gradation is only considered after four identical leading letters, so e.g. kunta/kunnan does not match.

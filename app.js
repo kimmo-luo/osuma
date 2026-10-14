@@ -40,12 +40,16 @@
       partlyCv: 'Osittain CV:ssä',
       partlyLetter: 'Osittain kirjeessä',
       noCvReqs: 'Ilmoituksessa ei ole CV:hen kuuluvia vaatimuksia, joten prosenttia ei lasketa.',
+      fewReqs: 'Ilmoituksessa on vähän mitattavia vaatimuksia, joten CV-prosentti ei kerro paljon.',
+      letterLead: 'Tässä ilmoituksessa painavat eniten asenne ja luonne. Kerro nämä hakemuskirjeessä.',
+      plusTitle: 'Plussaa',
+      plusNote: 'Eduksi, mutta ei vaatimus. Nämä eivät vaikuta prosenttiin. ✓ = löytyy CV:stä.',
       keywordsNote: 'CV:hen kuuluvien vaatimusten sanat.',
       keywords: 'Avainsanat',
       found: 'Löytyy CV:stä',
       missing: 'Puuttuu CV:stä',
-      howto: 'Vertailu tehdään sanan alun perusteella, joten taivutetut muodot ja yhdyssanat löytyvät (esim. "myynti" löytää sanan "myyntityössä" ja "kokemus" sanan "työkokemus"). Kaupan alan synonyymit (esim. esillelaitto = esillepano) tunnistetaan. Täytesanat, hakuohjeiden sanat, päivämäärät, osoitteet ja yrityksen nimi jätetään pois. Nuoli näyttää, mikä CV:n sana vastasi.',
-      footer: 'Osuma v1.1 · ilman tekoälyä · MIT-lisenssi',
+      howto: 'Vertailu tehdään sanan alun perusteella, joten taivutetut muodot ja yhdyssanat löytyvät (esim. "myynti" löytää sanan "myyntityössä" ja "kokemus" sanan "työkokemus"). Kaupan alan synonyymit (esim. esillelaitto = esillepano) ja luonnetta kuvaavat synonyymit (esim. kilpailuhenkinen = tavoitteellinen, tulen toimeen erilaisten ihmisten kanssa = yhteistyökykyinen) tunnistetaan. Täytesanat, hakuohjeiden sanat, päivämäärät, osoitteet ja yrityksen nimi jätetään pois. Nuoli näyttää, mikä CV:n sana vastasi.',
+      footer: 'Osuma v1.2 · ilman tekoälyä · MIT-lisenssi',
       noscript: 'Osuma tarvitsee JavaScriptin. Kaikki käsittely tapahtuu selaimessasi.',
       errBoth: 'Liitä sekä työpaikkailmoitus että CV.',
       errAd: 'Liitä työpaikkailmoitus.',
@@ -61,6 +65,8 @@
       none: 'Ei yhtään.',
       reqOk: 'Täyttyy: ',
       reqMiss: 'Ei täyty: ',
+      plusYes: 'Löytyy CV:stä: ',
+      plusNo: 'Ei CV:ssä: ',
       times: function (n) { return ', ' + n + ' kertaa ilmoituksessa'; },
       cvWord: ', CV:ssä ',
       langGroup: 'Kieli / Language'
@@ -97,12 +103,16 @@
       partlyCv: 'Partly in CV',
       partlyLetter: 'Partly in letter',
       noCvReqs: 'The ad has no requirements for the CV, so no percentage is calculated.',
+      fewReqs: 'The ad has few measurable requirements, so the CV percentage does not say much.',
+      letterLead: 'In this ad, attitude and personality matter most. Tell about them in your cover letter.',
+      plusTitle: 'Nice to have',
+      plusNote: 'An advantage, but not required. These do not affect the percentage. ✓ = found in your CV.',
       keywordsNote: 'Words from the requirements for the CV.',
       keywords: 'Keywords',
       found: 'Found in CV',
       missing: 'Missing from CV',
-      howto: 'Words are compared by their beginning, so inflected forms and compounds match (e.g. "manage" finds "managing", "kokemus" finds "työkokemus"). Common retail synonyms are recognised (e.g. esillelaitto = esillepano). Filler words, application instructions, dates, addresses and the company name are ignored. The arrow shows which CV word matched.',
-      footer: 'Osuma v1.1 · no AI · MIT licence',
+      howto: 'Words are compared by their beginning, so inflected forms and compounds match (e.g. "manage" finds "managing", "kokemus" finds "työkokemus"). Common retail synonyms (e.g. esillelaitto = esillepano) and personality synonyms (e.g. competitive = goal-oriented, gets along with people = team player) are recognised. Filler words, application instructions, dates, addresses and the company name are ignored. The arrow shows which CV word matched.',
+      footer: 'Osuma v1.2 · no AI · MIT licence',
       noscript: 'Osuma needs JavaScript. Everything is processed in your browser.',
       errBoth: 'Paste both the job ad and your CV.',
       errAd: 'Paste the job ad.',
@@ -118,6 +128,8 @@
       none: 'None.',
       reqOk: 'Met: ',
       reqMiss: 'Not met: ',
+      plusYes: 'Found in CV: ',
+      plusNo: 'Not in CV: ',
       times: function (n) { return ', ' + n + ' times in the ad'; },
       cvWord: ', in CV ',
       langGroup: 'Language / Kieli'
@@ -177,6 +189,13 @@
     'haastattelemme haastatteluun haastatteluihin viikolla viikon ' +
     'maanantaina tiistaina keskiviikkona torstaina perjantaina lauantaina sunnuntaina ' +
     'vahvaa minkä päälle mahd mukainen omiin myyt tienaat ' +
+    'aikaisempi aikaisempaa aikaisemmin aiempi aiempaa aiemmin vaatimus vaatimuksena edellytys etuna ansioksi kuitenkaan ' +
+    'tarvitse tarvitsee tarvitset tarvita valmis valmiina valmiiksi ensimmäinen ensimmäisestä ensimmäisen ensimmäistä ' +
+    'liittyvä liittyviä liittyvät liittyvien liittyen sisältyy sisältää sisältävät sisältyvät ' +
+    'työtehtävät työtehtäviä työtehtävää työtehtävien työtehtäviin ' +
+    'tehtävänkuva tehtävänkuvaan tehtävänkuvaasi työnkuva työnkuvaan työnkuvaasi ' +
+    // Spoken forms: sulla on, sä oot, mulle.
+    'sä sää sua sulla sulle sulta sun susta suhun mä mää mua mulla mulle multa mun muhun oot oon meiän meijän teiän niinku ' +
     'www http https com fi'
   ).split(/\s+/);
 
@@ -230,7 +249,8 @@
     'over under all any some each both either neither etc e.g i.e eg ie plus well able strong good great excellent ideally preferably ' +
     'looking seeking join apply applicants candidate candidates role position opportunity offer offers including include includes ' +
     'within across per via there here just only own one ' +
-    'requirements required nice least year years minimum hi hello thanks always often soon new two three skill skills'
+    'requirements required nice least year years minimum hi hello thanks always often soon new two three skill skills ' +
+    'advantage asset bonus previous prior'
   ).split(/\s+/);
 
   var STOP = Object.create(null);
@@ -590,11 +610,30 @@
   // ---------- Sentence types ----------
 
   // A heading such as "Sinulla on:" or "Edellytämme" starts a requirement section.
-  var REQ_HEADING_RE = /(sinulla on|jolla on|sinulta löytyy|edellytämme|edellytetään|toivomme|odotamme|arvostamme|vaadimme|vaatimukse|eduksi|plussaa|osaamista|(?:^|\s)profiili(?:si)?\b|you have|you bring|about you|who you are|looking for|your profile|requirements|we expect|we hope|qualifications|nice to have|must have)/i;
+  // The heading phrase is matched whole ("sovit meidän tiimiin, jos"), so that its words
+  // are not mistaken for a requirement of the heading line itself.
+  var FIT_PHRASE = 'sovit\\s+(?:hyvin\\s+)?(?:meille|meidän\\s+(?:tiimiin|joukkoon|porukkaan)|tiimiimme|joukkoomme|porukkaamme)';
+  var SEEK_PHRASE = 'etsimme\\s+(?:henkilöä|sinua|sua|tekijää|työntekijää|myyjää|osaajaa|kollegaa),?\\s+jo(?:ka|lla(?:\\s+on)?)';
+  var REQ_HEADING_RE = new RegExp('(' + FIT_PHRASE + '|' + SEEK_PHRASE + '|sinulla on|sulla on|sää? oot|jolla on|sinulta löytyy|' +
+    'sulta löytyy|sinusta löytyy|sinä olet|olet oikea henkilö|kuka olet|millainen olet|ketä etsimme|keitä etsimme|' +
+    'edellytämme|edellytetään|toivomme|odotamme|arvostamme|vaadimme|vaatimukse|eduksi|plussaa|osaamista|' +
+    '(?:^|\\s)profiili(?:si)?\\b|you have|you bring|about you|who you are|looking for|your profile|requirements|' +
+    'we expect|what we expect|we hope|qualifications|nice to have|must have|you will fit|' +
+    '(?:^|\\s)jos\\s*:?\\s*$)', 'i');
+  // "Eduksi katsotaan:", "Plussaa:", "Nice to have:" start a section of advantages, not requirements.
+  // Not plain "bonus": "Palkka ja bonus:" lists benefits.
+  var PLUS_HEADING_RE = /(eduksi|plussaa|etuna|ansioksi|nice to have|bonus points|a plus|an advantage)/i;
+  var MIXED_HEADING_RE = /(edellyt|vaadi|vaatimu|requir|must|odotamme|sinulla on)/i;
   // A heading such as "Tarjoamme:" starts a section that is not about the applicant.
   var OFFER_HEADING_RE = /(tarjoamme|meiltä saat|saat meiltä|edut|työsuhde-ed|we offer|benefits|what you get|about us|meistä)/i;
   // Headings without a colon must be short and consist of the heading phrase only.
-  var BARE_HEADING_RE = /^(?:mitä\s+)?(?:sinulla on|toivomme|edellytämme|odotamme|arvostamme|vaatimukset|eduksi katsotaan|tarjoamme|meiltä saat|edut|työsuhde-edut|requirements|qualifications|nice to have|about you|your profile|we offer|benefits)(?:\s+(?:sinulta|sinulle|teiltä|teille|meiltä|you))?\s*[!?.]?$/i;
+  var BARE_HEADING_RE = new RegExp('^(?:mitä\\s+|millaista\\s+)?(?:' + FIT_PHRASE + '|' + SEEK_PHRASE + '|sinulla on|sulla on|sää? oot|' +
+    'toivomme|edellytämme|odotamme|sinulta odotamme|arvostamme|vaatimukset|eduksi katsotaan|katsomme eduksi|plussaa|' +
+    'sinä olet|kuka olet|millainen olet|ketä etsimme|keitä etsimme|tarjoamme|meiltä saat|edut|työsuhde-edut|' +
+    'requirements|qualifications|nice to have|about you|who you are|your profile|what we expect|we offer|' +
+    // Headings that end a section: "Meistä", "Hae nyt".
+    'what we offer|benefits|meistä|tietoa meistä|yrityksestä|about us|hae|hae nyt|näin haet|how to apply)(?:\\s+(?:sinulta|sinulle|sulta|sulle|teiltä|teille|meiltä|from you|you))?(?:,?\\s+jos)?' +
+    '\\s*[!?.]?$', 'i');
   // A sentence that opens with an offer is about the employer, whatever words follow.
   var OFFER_START_RE = /^(?:tarjoamme|meiltä saat|saat meiltä|we offer|you will get|you get)\b|^työssä(?:si)?\s+pääset\s+(?:kehittä|oppi|etene|nautti|kouluttau)/i;
 
@@ -653,8 +692,17 @@
     });
     if (strong || (weak || contact) && verb || weak && !req && !inReq || contact && !req) return 'apply';
     if (section === 'offer' || OFFER_START_RE.test(text)) return 'other';
-    return req || inReq ? 'req' : 'other';
+    if (req || inReq) return 'req';
+    // "Etsimme reippaita, tuloshakuisia myyjiä", "Jos olet myyntihenkinen ja tavoitteellinen…"
+    return APPLICANT_RE.test(text.trim()) && hasTrait(text) ? 'req' : 'other';
   }
+
+  // Sentences that describe the person wanted. Only with a trait word, so
+  // "Etsimme kasvavaan tiimiimme myyjää" stays other text.
+  var APPLICANT_RE = new RegExp('^(?:etsimme|haemme|toivomme|odotamme|arvostamme|kaipaamme|' +
+    'jos\\s+(?:olet|oot|sinulla|sulla|sinusta|susta|sä|koet|tunnistat)|olet|oot|sä\\s+oot|sinä\\s+olet|' +
+    '(?:sinulla|sulla)\\s+on|(?:sinulta|sulta|sinusta)\\s+löytyy|we(?:\'re|\\s+are)\\s+(?:looking|seeking)|' +
+    'we\\s+seek|you\\s+are|you\'re|if\\s+you)(?!\\p{L})', 'iu');
 
   // Requirement words that never describe a benefit (unlike koulutus or osaaminen).
   var STRONG_REQ_RE = /kokemu|kortti|passi$|passi[a-zäö]|tutkinto|pätevyy|^edellyt|^vaatimu|^vaaditaan|^required|^requirement|^experience|degree|qualif/u;
@@ -678,8 +726,11 @@
   // "Työssä pääset kehittämään osaamistasi" is a benefit, so learning verbs are left out.
   var DUTY_RE = new RegExp([
     '^(?:työ)?tehtävä(?:t|si|nne)?\\s+(?:kuuluu|kuuluvat|keskittyv|sisältäv|ovat\\s+(?:mm|esim|muun))',
-    '(?:^|\\s)(?:työ)?tehtäv(?:iin|iisi)\\s+kuulu',
-    'työhö(?:n|si)\\s+kuulu', 'työnkuvaa(?:n|si)\\s+kuulu', 'osa\\s+työtäsi', 'vastuullasi', '^vastaat\\s',
+    '(?:^|\\s)(?:työ)?tehtäv(?:iin|iisi)\\s+(?:\\p{L}+\\s+)?(?:kuulu|sisält)',
+    // "Tehtävänkuvaan sisältyy myös myymälänhoitoa", "Työnkuvaasi kuuluu…"
+    '^(?:työ)?tehtävänkuva(?:an|asi|aasi)?\\s+(?:\\p{L}+\\s+)?(?:kuulu|sisält)',
+    'työhö(?:n|si)\\s+(?:\\p{L}+\\s+)?(?:kuulu|sisält)', 'työnkuvaa(?:n|si)\\s+(?:\\p{L}+\\s+)?(?:kuulu|sisält)',
+    'osa\\s+työtäsi', 'vastuullasi', '^vastaat\\s',
     'työssä(?:si)?\\s+pääse\\p{L}*\\s+(?!kehittä|oppi|etene|nautti|kouluttau)',
     '^you will\\s+(?!get\\b|be part|join|receive|have\\b|enjoy|be offered|work with a great)',
     'your tasks', '^duties', '^responsibilit'
@@ -714,13 +765,30 @@
   // first plain-text line after it, which is usually something else (company intro, contacts).
   function segmentAd(ad) {
     var out = [];
-    var section = null; // 'req', 'offer', 'none' or null
+    var section = null; // 'req', 'plus', 'offer', 'duty', 'none' or null
     var sectionHasBullets = false;
-    ad.split(/\r?\n/).forEach(function (line) {
+
+    function headingSection(text) {
+      if (PLUS_HEADING_RE.test(text) && !MIXED_HEADING_RE.test(text)) return 'plus';
+      return REQ_HEADING_RE.test(text) ? 'req' : OFFER_HEADING_RE.test(text) ? 'offer' :
+        DUTY_HEADING_RE.test(text) ? 'duty' : 'none';
+    }
+
+    function handle(line) {
       var text = line.trim();
       if (!text) return;
       var bullet = BULLET_RE.test(line);
       if (bullet) text = line.replace(BULLET_RE, '').trim();
+      // "…halu kehittyä pitää löytyä. Sovit meidän tiimiin, jos:" ends in a heading of its own.
+      if (!bullet && /:\s*$/.test(text)) {
+        var sentences = text.split(SENTENCE_RE).map(function (s) { return s.trim(); }).filter(Boolean);
+        if (sentences.length > 1) {
+          var last = sentences.pop();
+          handle(sentences.join(' '));
+          handle(last);
+          return;
+        }
+      }
       // A heading with a marker in front ("✨ Tarjoamme sinulle", "- Sinulla on:") is still a heading.
       if (bullet && (BARE_HEADING_RE.test(text) || text.length <= 60 && /:\s*$/.test(text) &&
           (REQ_HEADING_RE.test(text) || OFFER_HEADING_RE.test(text) || DUTY_HEADING_RE.test(text)))) bullet = false;
@@ -733,7 +801,8 @@
       // "Sinulla on: B-ajokortti ja hygieniapassi." on one line.
       var inline = !bullet && /^([^:]{1,60}):\s*(\S.*)$/.exec(text);
       if (inline && REQ_HEADING_RE.test(inline[1])) {
-        out.push({ text: text, kind: sentenceKind(inline[2], 'req', true) });
+        var inlineSection = headingSection(inline[1]) === 'plus' ? 'plus' : 'req';
+        out.push({ text: text, kind: sentenceKind(inline[2], inlineSection, true), section: inlineSection });
         return;
       }
 
@@ -743,12 +812,12 @@
         var aboutApplying = words.some(function (w) {
           return startsWithAny(w, APPLY_STRONG) || startsWithAny(w, APPLY_WEAK) || startsWithAny(w, CONTACT_WORDS);
         });
-        section = aboutApplying ? 'none' : REQ_HEADING_RE.test(text) ? 'req' : OFFER_HEADING_RE.test(text) ? 'offer' :
-          DUTY_HEADING_RE.test(text) ? 'duty' : 'none';
+        section = aboutApplying ? 'none' : headingSection(text);
         sectionHasBullets = false;
         // "…jos olet täysi-ikäinen ja sinulla on:" carries a requirement of its own,
-        // "Vaatimukset:" does not.
-        var own = section === 'req' && hasKeyword(text.replace(new RegExp(REQ_HEADING_RE.source, 'gi'), ' '));
+        // "Vaatimukset:" and "Sovit meille, jos:" do not.
+        var own = section === 'req' && !/(?:^|\s)jos\s*:?\s*$/i.test(text) &&
+          hasKeyword(text.replace(new RegExp(REQ_HEADING_RE.source, 'gi'), ' '));
         out.push({ text: text, kind: own ? 'req' : 'other', heading: !own });
         return;
       }
@@ -757,10 +826,12 @@
       var pieces = bullet ? [text] : text.split(SENTENCE_RE).map(function (s) { return s.trim(); }).filter(Boolean);
       pieces.forEach(function (s) {
         // Bullet points count as requirements unless they list what the employer offers.
-        var inReq = section === 'req' || bullet && section !== 'offer';
+        var inReq = section === 'req' || section === 'plus' || bullet && section !== 'offer';
         out.push({ text: s, kind: sentenceKind(s, section, inReq), section: section });
       });
-    });
+    }
+
+    ad.split(/\r?\n/).forEach(handle);
     return out;
   }
 
@@ -777,17 +848,149 @@
   // järjestelmä is a system, järjestelmällinen is a personality trait.
   var CV_SYSTEM_RE = /järjestelm(?!ällis)/u;
 
-  // Personality, attitude, motivation, availability and physical condition belong in the letter.
-  var LETTER_PARTS = ['positiivi', 'aloittei', 'aloitteel', 'vuorovaikutu', 'yhteistyö', 'pelisilm', 'ylpe',
-    'kiinnostu', 'asenne', 'asentee', 'innostu', 'motivaatio', 'motivoitu', 'täsmälli', 'luotettav', 'joustav',
-    'palveluhenk', 'tiimihenk', 'tiimipelaaja', 'stressinsieto', 'paineensieto', 'huumori', 'liikkuvuu', 'vauhdik',
-    'työskentelytyyl', 'rehelli', 'avulia', 'ystävälli', 'kohteliai', 'kehitty', 'sitoutu', 'vastuullis', 'huolelli',
-    'järjestelmällis', 'oppimishal',
-    'positive', 'motivat', 'attitude', 'enthusias', 'proactive', 'self-start', 'interpersonal', 'passion',
-    'reliable', 'flexib', 'cheerful', 'communicat'];
-  // Trait words checked at the start of a word only: iloinen (not tiloissa), kunto (not kuntoutus),
-  // energinen (not energia-ala), sosiaalinen (not sosiaalihuolto), friendly (not user-friendly).
-  var LETTER_WORD_RE = /^(?:iloi|innok|reipas|reippa|ahker|sosiaalis|sosiaalinen|energi(?!a)|tehokka|loppuun|fyysi|kunto(?!ut|sal)|kunnossa|friendly|player)/u;
+  // ---------- Personality and attitude (sanasto.js) ----------
+
+  // Personality, attitude, motivation and physical condition belong in the letter. The
+  // words live in sanasto.js as synonym groups: any word of a group fills any other.
+  var SANASTO = typeof OsumaSanasto !== 'undefined' ? OsumaSanasto :
+    typeof require === 'function' ? require('./sanasto.js') : { ryhmat: [] };
+  var TRAIT_PREFIX = [];   // { stem, group }: the word starts with stem (rohke → rohkeasti)
+  var TRAIT_INSIDE = [];   // { stem, group }: anywhere in a compound (asiakaspalveluhenkinen)
+  var TRAIT_PHRASES = [];  // { parts: [[alternatives]], group }: words in order (ei|en|et lannistu)
+  var TRAIT_NOT = [];          // word starts that are never traits (energia)
+  var TRAIT_NOT_PHRASES = [];  // phrases whose words are never traits (sosiaalinen media)
+  (SANASTO.eiLuonne || []).forEach(function (s) {
+    s = String(s).toLowerCase().trim();
+    if (/\s/.test(s)) TRAIT_NOT_PHRASES.push(s.split(/\s+/).map(function (p) { return p.split('|').filter(Boolean); }));
+    else if (s) TRAIT_NOT.push(s);
+  });
+  (SANASTO.ryhmat || []).forEach(function (g, gi) {
+    (g.fi || []).concat(g.en || []).forEach(function (item) {
+      item = String(item).toLowerCase().trim();
+      if (!item) return;
+      if (/\s/.test(item)) {
+        TRAIT_PHRASES.push({ group: gi, parts: item.split(/\s+/).map(function (p) { return p.split('|').filter(Boolean); }) });
+      } else if (item.charAt(0) === '*') {
+        if (item.length > 1) TRAIT_INSIDE.push({ stem: item.slice(1), group: gi });
+      } else {
+        TRAIT_PREFIX.push({ stem: item, group: gi });
+      }
+    });
+  });
+  // Up to this many other words may sit between the words of a phrase.
+  var PHRASE_GAP = 2;
+  // A single trait word shortly after a negation does not count: "en ole kovin rohkea".
+  var NEG_WINDOW = 3;
+  // Not "no": in Finnish it starts a sentence ("No, olen iloinen").
+  var NEGATIONS = { ei: true, en: true, et: true, eivät: true, emme: true, ette: true, eikä: true, enkä: true,
+    etkä: true, not: true, never: true, without: true };
+
+  // A conjunction ends the negation ("en lannistu ja olen sinnikäs"), and so does "only"
+  // ("ei pelkästään ahkera, vaan myös iloinen"). Commas end it too, see traitClauses().
+  var NEG_STOP = { ja: true, vaan: true, mutta: true, sekä: true, pelkästään: true, ainoastaan: true, vain: true,
+    and: true, but: true, only: true, just: true };
+  function negated(words, i) {
+    for (var k = i - 1; k >= 0 && k >= i - NEG_WINDOW; k--) {
+      if (NEG_STOP[words[k]]) return false;
+      if (NEGATIONS[words[k]]) return true;
+    }
+    return false;
+  }
+
+  // Synonym groups of a single word ([] when it is not a trait word).
+  var wordGroupCache = Object.create(null);
+  function wordTraitGroups(w) {
+    var hit = wordGroupCache[w];
+    if (hit) return hit;
+    hit = [];
+    if (!startsWithAny(w, TRAIT_NOT)) {
+      TRAIT_PREFIX.forEach(function (e) { if (w.indexOf(e.stem) === 0 && hit.indexOf(e.group) === -1) hit.push(e.group); });
+      TRAIT_INSIDE.forEach(function (e) { if (w.indexOf(e.stem) !== -1 && hit.indexOf(e.group) === -1) hit.push(e.group); });
+    }
+    wordGroupCache[w] = hit;
+    return hit;
+  }
+
+  // Parts of up to three letters must match the whole word: "ei" is not "että".
+  function partMatch(w, alternatives) {
+    for (var i = 0; i < alternatives.length; i++) {
+      var a = alternatives[i];
+      if (a.length <= 3 ? w === a : w.indexOf(a) === 0) return true;
+    }
+    return false;
+  }
+
+  function phraseAt(words, i, parts) {
+    if (!partMatch(words[i], parts[0])) return null;
+    var at = [i];
+    for (var p = 1; p < parts.length; p++) {
+      var next = -1;
+      for (var j = at[at.length - 1] + 1; j < words.length && j <= at[at.length - 1] + 1 + PHRASE_GAP; j++) {
+        if (partMatch(words[j], parts[p])) { next = j; break; }
+      }
+      if (next === -1) return null;
+      at.push(next);
+    }
+    return at;
+  }
+
+  // For each word of a sentence, the synonym groups it belongs to (null if none).
+  // `guard`: skip single trait words right after a negation.
+  function traitHits(words, guard) {
+    var out = words.map(function (w, i) {
+      var g = wordTraitGroups(w);
+      if (!g.length) return null;
+      if (guard && negated(words, i)) return null;
+      return g.slice();
+    });
+    TRAIT_PHRASES.forEach(function (ph) {
+      for (var i = 0; i < words.length; i++) {
+        var at = phraseAt(words, i, ph.parts);
+        if (!at) continue;
+        at.forEach(function (k) {
+          var g = out[k] || (out[k] = []);
+          if (g.indexOf(ph.group) === -1) g.push(ph.group);
+        });
+      }
+    });
+    // "sosiaalisen median" is not a trait.
+    TRAIT_NOT_PHRASES.forEach(function (parts) {
+      for (var i = 0; i < words.length; i++) {
+        var at = phraseAt(words, i, parts);
+        if (at) at.forEach(function (k) { out[k] = null; });
+      }
+    });
+    return out;
+  }
+
+  function wordsOf(text) { return tokenize(text).map(function (t) { return t.word; }); }
+
+  // Does the text name a trait? Interest alone ("Jos olet kiinnostunut, …") does not count.
+  function hasTrait(text) {
+    var words = wordsOf(text);
+    return traitHits(words, false).some(function (g, i) { return g && !/^kiinnostu/.test(words[i]); });
+  }
+
+  // A CV or letter cut into sentences and comma-separated parts, so that a negation
+  // does not reach past them: "Ei rikosrekisteriä, luotettava."
+  function traitClauses(text) {
+    var out = [];
+    (text || '').split(SENTENCE_RE).forEach(function (s) {
+      if (s) s.split(/[,;:()]/).forEach(function (c) { if (c.trim()) out.push(c); });
+    });
+    return out;
+  }
+
+  // The synonym groups found anywhere in a CV or letter, as { group: true }.
+  function textTraitGroups(text) {
+    var found = Object.create(null);
+    traitClauses(text).forEach(function (s) {
+      traitHits(wordsOf(s), true).forEach(function (g) {
+        if (g) g.forEach(function (x) { found[x] = true; });
+      });
+    });
+    return found;
+  }
 
   function hasPart(w, parts) {
     for (var i = 0; i < parts.length; i++) if (w.indexOf(parts[i]) !== -1) return true;
@@ -801,17 +1004,19 @@
   }
 
   function isTraitWord(w) {
-    return hasPart(w, LETTER_PARTS) || LETTER_WORD_RE.test(w) || REQ_HALU_RE.test(w);
+    return wordTraitGroups(w).length > 0 || REQ_HALU_RE.test(w);
   }
 
   // 'cv', 'letter' or 'none' (no signal). Anything for the CV wins.
   // `atStart`: the piece starts the sentence, so its first word is capitalised anyway.
   function clauseSignal(text, atStart) {
     var cvHit = false, weakCvHit = false, letterHit = false, otherHit = false;
-    tokenize(text).forEach(function (t, i) {
+    var tokens = tokenize(text);
+    var traits = traitHits(tokens.map(function (t) { return t.word; }), false);
+    tokens.forEach(function (t, i) {
       // A trait compound wins over its generic part: vuorovaikutustaidot is a trait,
       // neuvottelutaidot and kielitaito are skills.
-      if (isTraitWord(t.word)) letterHit = true;
+      if (traits[i] || REQ_HALU_RE.test(t.word)) letterHit = true;
       else if (isCvWord(t.word)) {
         // Plain "taidot" / "skills" only says a skill is meant; next to a trait
         // ("communication skills", "ylpeyttä ammattitaidostasi") the trait decides.
@@ -876,15 +1081,72 @@
     });
   }
 
+  // "Aikaisempi myyntikokemus on plussaa, mutta ei vaatimus": an advantage, shown apart and not scored.
+  var PLUS_MARK_RE = /(?:^|[^\p{L}])(?:plussaa|plussana|eduksi|eduksesi|etuna|ansioksi|is a plus|a plus|nice to have|an advantage|advantageous|an asset|a bonus|bonus points|ei\s+(?:\p{L}+\s+)?(?:ole\s+)?(?:vaatimus|edellytys|pakollinen|pakollista|välttämätön|välttämätöntä)|muttei\s+(?:vaatimus|edellytys|pakollinen|välttämätön)|not\s+(?:required|a requirement|mandatory|essential))(?![\p{L}-])/iu;
+  // "Meille ei tarvitse tulla valmiina huippumyyjänä": not asked for at all.
+  var NEEDLESS_RE = /(?:^|[^\p{L}])(?:ei\s+tarvitse|ei\s+tarvita|no need|don.t need|do not need|don.t have to|do not have to)(?![\p{L}])/iu;
+  var LEAD_CONJ_RE = /^(?:mutta|muttei|but|though|vaikka|kunhan|as long as|ja|sekä|and)\s+/i;
+  var LIST_CONJ_RE = /(?:^|\s)(?:ja|tai|sekä|and|or)\s/i;
+
+  // Splits a sentence at commas and at "ja" / "mutta" into 'plus', 'skip' and 'req' parts.
+  // "Fluent English, Finnish is a plus" keeps English as a requirement, and so does the
+  // licence in "Kokemus myynnistä on plussaa ja ajokortti on välttämätön". A list that ends
+  // in the plus phrase is all plus: "Kokemus, koulutus tai muu näyttö katsotaan eduksi".
+  function splitOptional(text) {
+    if (!PLUS_MARK_RE.test(text) && !NEEDLESS_RE.test(text)) return [{ text: text, kind: 'req' }];
+    // Pieces and what came before each: ', ' or ' ' (before "ja", "mutta" …).
+    var bits = text.split(/(,\s+|(?<!-)\s+(?=(?:ja|sekä|mutta|muttei|and|but)\s))/i);
+    var pieces = [], seps = [];
+    for (var b = 0; b < bits.length; b += 2) {
+      pieces.push(bits[b]);
+      seps.push(b ? (bits[b - 1].charAt(0) === ',' ? ', ' : ' ') : '');
+    }
+    var kinds = pieces.map(function (p) {
+      return PLUS_MARK_RE.test(p) ? 'plus' : NEEDLESS_RE.test(p) ? 'skip' : 'req';
+    });
+    // "Kokemus, koulutus tai muu näyttö katsotaan eduksi": a list ending in the plus phrase.
+    var first = kinds.indexOf('plus');
+    if (first > 0 && seps[first] === ', ' && /\s(?:ja|tai|sekä|and|or)\s/i.test(pieces[first])) {
+      for (var i = 0; i < first; i++) if (kinds[i] === 'req') kinds[i] = 'plus';
+    }
+    for (var j = pieces.length - 2; j >= 0; j--) {
+      if (kinds[j] !== 'req' || kinds[j + 1] !== 'plus') continue;
+      var next = pieces[j + 1];
+      // "Kokemus ja koulutus katsotaan eduksi" shares the plus phrase; "Myyntikokemus, mutta
+      // ei vaatimus" and "Trukkikortti, ei kuitenkaan pakollinen" only comment on the piece before.
+      if (seps[j + 1] === ' ' && LIST_CONJ_RE.test(next) || /^(?:mutta|muttei|but|though|vaikka)\s/i.test(next) ||
+          !hasKeyword(next.replace(PLUS_MARK_RE, ' '))) kinds[j] = 'plus';
+    }
+    var out = [];
+    pieces.forEach(function (p, k) {
+      var last = out[out.length - 1];
+      if (last && last.kind === kinds[k]) last.text += seps[k] + p;
+      else out.push({ text: p, kind: kinds[k] });
+    });
+    return out.map(function (o) {
+      var s = o.text.trim().replace(LEAD_CONJ_RE, '');
+      return { text: s.charAt(0).toUpperCase() + s.slice(1), kind: o.kind };
+    });
+  }
+
+  // Hard requirements make the CV the main thing: years of experience, a degree,
+  // a licence or a supervisor's role. Without them the letter part is shown first.
+  var HARD_RE = /(?:^|[^\p{L}\d])\d+(?:\s*[-–]\s*\d+)?\s*\+?\s*(?:vuo(?:den|tta|si)|v\.|years?|yrs?)(?![\p{L}])|vähintään\s+\S+\s+(?:vuoden|vuotta)|tutkinto|tutkinno|(?:^|[^\p{L}])y?amk(?![\p{L}])|korkeakoulu|yliopisto|maisteri|kandidaat|degree|bachelor|master'?s|diploma|kortti|licen[cs]e|esimie|esihenkil|johtami|johtotehtäv|johtajakokemu|team lead|leadership|managerial|people management/iu;
+
   function buildTextIndex(text) {
     var words = [];
     var seen = Object.create(null);
     function add(w) {
       if (w && !seen[w]) { seen[w] = true; words.push(w); }
     }
-    tokenize(text).forEach(function (t) {
-      add(t.word);
-      if (t.word.indexOf('-') !== -1) t.word.split('-').forEach(add);
+    traitClauses(text).forEach(function (c) {
+      var all = wordsOf(c);
+      all.forEach(function (w, i) {
+        // "En ole kovin rohkea" does not show courage.
+        if (isTraitWord(w) && negated(all, i)) return;
+        add(w);
+        if (w.indexOf('-') !== -1) w.split('-').forEach(add);
+      });
     });
     return buildIndex(words);
   }
@@ -908,6 +1170,9 @@
     var index = buildTextIndex(cv);
     var hasLetter = !!(letter && letter.trim());
     var letterIndex = hasLetter ? buildTextIndex(letter) : null;
+    // Trait synonym groups that the CV and the letter mention (tiimipelaaja = yhteistyökykyinen).
+    var cvTraits = textTraitGroups(cv);
+    var letterTraits = hasLetter ? textTraitGroups(letter) : Object.create(null);
 
     // Every distinct ad word is checked against the CV on its own.
     var matchOf = Object.create(null);
@@ -960,6 +1225,7 @@
     var letterClauses = [];
     var availability = [];
     var others = [];
+    var plusClauses = [];
     segments.forEach(function (s) {
       // Working hours, shifts, age and start date: shown apart, never scored.
       // What the employer offers (vuorotyölisät) is not a question for the applicant.
@@ -972,12 +1238,21 @@
         availability.push(s.text);
         return;
       }
-      // Requirements and duties are split into CV, letter and availability clauses.
-      // A duty clause without any trait or availability words stays in the CV group.
-      splitClauses(s.text, s.duty ? 'cv' : null).forEach(function (c) {
-        // A duty piece without trait or availability words is CV material.
-        var g = s.duty && clauseSignal(c) === 'none' ? 'cv' : clauseGroup(c);
-        (g === 'letter' ? letterClauses : g === 'avail' ? availability : cvClauses).push(c);
+      // Advantages ("Eduksi katsotaan:", "…on plussaa, mutta ei vaatimus") are shown apart,
+      // and "Meille ei tarvitse tulla valmiina huippumyyjänä" is not asked for at all.
+      var parts = s.section === 'plus' ? [{ text: s.text, kind: 'plus' }] : splitOptional(s.text);
+      parts.forEach(function (p) {
+        if (p.kind === 'skip') { others.push(p.text); return; }
+        if (p.kind === 'plus') {
+          (isAvailability(p.text) && !hasStrongCv(p.text) ? availability : plusClauses).push(p.text);
+          return;
+        }
+        // Requirements and duties are split into CV, letter and availability clauses.
+        splitClauses(p.text, s.duty ? 'cv' : null).forEach(function (c) {
+          // A duty piece without trait or availability words is CV material.
+          var g = s.duty && clauseSignal(c) === 'none' ? 'cv' : clauseGroup(c);
+          (g === 'letter' ? letterClauses : g === 'avail' ? availability : cvClauses).push(c);
+        });
       });
     });
 
@@ -1003,17 +1278,24 @@
       var total = 0, inCv = 0, inLetter = 0, inEither = 0;
       var traits = 0, traitsFound = 0, traitInCv = false, traitInLetter = false;
       var counted = [];
-      tokenize(line).forEach(function (t) {
+      var tokens = tokenize(line);
+      // Trait words and phrases of the clause, each with its synonym groups.
+      var clauseTraits = useLetter ? traitHits(tokens.map(function (t) { return t.word; }), false) : [];
+      function inGroups(i, found) {
+        return !!clauseTraits[i] && clauseTraits[i].some(function (g) { return found[g]; });
+      }
+      tokens.forEach(function (t, i) {
         if (t.index > pos) parts.push({ text: line.slice(pos, t.index) });
         if (isKeyword(t)) {
           var cvHit = !!match(t.word);
           // The CV group is scored from the CV alone.
           var letterHit = useLetter && !!letterMatch(t.word);
-          var trait = useLetter && isTraitWord(t.word);
+          var trait = useLetter && (!!clauseTraits[i] || REQ_HALU_RE.test(t.word));
           // For a trait the matching word must carry the trait too: CV "asiakaspalvelu"
-          // does not show an "asiakaspalveluasenne".
-          var cvTrait = trait && cvHit && isTraitWord(match(t.word));
-          var letterTrait = trait && letterHit && isTraitWord(letterMatch(t.word));
+          // does not show an "asiakaspalveluasenne". A synonym from the same group also
+          // counts: "tulen toimeen erilaisten ihmisten kanssa" fills "yhteistyökykyinen".
+          var cvTrait = trait && (cvHit && isTraitWord(match(t.word)) || inGroups(i, cvTraits));
+          var letterTrait = trait && (letterHit && isTraitWord(letterMatch(t.word)) || inGroups(i, letterTraits));
           // A trait found only through a plain word (asiakaspalveluasenne ← "asiakaspalvelusta")
           // shows that the topic is there, but not the attitude: it counts as "partly".
           // Generic words (työskennellä, taito, ammattitaito) are in almost every letter
@@ -1027,7 +1309,7 @@
             total++;
             if (cvHit) inCv++;
             if (letterHit) inLetter++;
-            if ((cvHit || letterHit) && !generic) inEither++;
+            if ((cvHit || letterHit || cvTrait || letterTrait) && !generic) inEither++;
             if (trait) {
               traits++;
               if (cvTrait || letterTrait) traitsFound++;
@@ -1062,6 +1344,10 @@
     function hasKeywords(r) { return r.total > 0; }
     var reqs = cvClauses.map(function (c) { return inspect(c, false); }).filter(hasKeywords);
     var letterReqs = letterClauses.map(function (c) { return inspect(c, true); }).filter(hasKeywords);
+    var plusReqs = plusClauses.map(function (c) { return inspect(c, false); }).filter(hasKeywords);
+    var hardReqs = cvClauses.some(function (c) {
+      return HARD_RE.test(c) || tokenize(c).some(function (t) { return REQ_PASSI_RE.test(t.word); });
+    });
 
     var foundGroups = groups.filter(function (g) { return g.match; });
     var missingGroups = groups.filter(function (g) { return !g.match; });
@@ -1075,6 +1361,10 @@
       missing: missingGroups,
       reqs: reqs,
       letterReqs: letterReqs,
+      plusReqs: plusReqs,
+      // Without hard requirements (years, a degree, a licence, a supervisor's role) the
+      // letter part matters most and is shown first.
+      letterFirst: !hardReqs && letterReqs.length > 0,
       availability: availability,
       hasLetter: hasLetter,
       others: others,
@@ -1148,12 +1438,14 @@
     if (groups.length > MAX_CHIPS) list.appendChild(el('li', 'empty', t('more')(groups.length - MAX_CHIPS)));
   }
 
-  // One requirement line. `badge` names where it was found (letter group only).
-  function reqItem(q, status, badge) {
+  // One requirement line. `badge` names where it was found (letter group only);
+  // `sr` replaces the "Met:" / "Not met:" label read by screen readers.
+  function reqItem(q, status, badge, sr) {
     var li = el('li', 'req ' + status);
     li.appendChild(hidden('span', 'req-icon', status === 'ok' ? '✓' : status === 'miss' ? '✗' : '•'));
     var text = el('span', 'req-text');
-    if (!badge) text.appendChild(srOnly(q.ok ? t('reqOk') : t('reqMiss')));
+    if (sr) text.appendChild(srOnly(sr));
+    else if (!badge) text.appendChild(srOnly(q.ok ? t('reqOk') : t('reqMiss')));
     q.parts.forEach(function (p) {
       if (p.ok === undefined) text.appendChild(document.createTextNode(p.text));
       else text.appendChild(el('span', p.ok ? 'w-ok' : p.part ? 'w-part' : status === 'todo' ? '' : 'w-miss', p.text));
@@ -1185,9 +1477,20 @@
     $('req-summary').textContent = t('reqSummary')(met, r.reqs.length);
     fillList($('req-list'), r.reqs, function (q) { return reqItem(q, q.ok ? 'ok' : 'miss'); });
     $('fallback-note').hidden = !r.fallback;
+    // A percentage from one or two items says little.
+    $('score-warn').hidden = r.fallback || !(r.reqs.length > 0 && r.reqs.length < 3);
+
+    // Advantages: shown with a ✓ when the CV has them, never scored.
+    $('plus-block').hidden = !r.plusReqs.length;
+    fillList($('plus-list'), r.plusReqs, function (q) { return reqItem(q, q.ok ? 'ok' : 'todo', null, t(q.ok ? 'plusYes' : 'plusNo')); });
+
+    // Without hard requirements the letter part goes first, above the percentage.
+    var letterBlock = $('letter-block');
+    $('results').insertBefore(letterBlock, r.letterFirst ? $('score-block') : $('plus-block'));
+    $('letter-lead').hidden = !r.letterFirst;
 
     // Personality, attitude and motivation: checked from the letter when there is one.
-    $('letter-block').hidden = !r.letterReqs.length;
+    letterBlock.hidden = !r.letterReqs.length;
     $('letter-title').textContent = t(r.hasLetter ? 'letterTitle' : 'tellTitle');
     $('letter-summary').textContent = t(r.hasLetter ? 'letterSummary' : 'tellSummary')(r.letterReqs.length);
     fillList($('letter-list'), r.letterReqs, function (q) {

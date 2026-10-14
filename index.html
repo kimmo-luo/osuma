@@ -61,13 +61,14 @@
     <section id="results" class="results notranslate" translate="no" hidden aria-labelledby="results-title">
       <h2 id="results-title" tabindex="-1" data-i18n="results">Tulos</h2>
 
-      <div class="score">
+      <div id="score-block" class="score">
         <div class="score-num"><span id="score-value">0</span><span class="pct">%</span></div>
         <div class="score-side">
           <div class="bar" aria-hidden="true"><div id="score-bar" class="bar-fill"></div></div>
           <p id="score-text" class="score-text"></p>
         </div>
       </div>
+      <p id="score-warn" class="warn small" data-i18n="fewReqs" hidden>Ilmoituksessa on vähän mitattavia vaatimuksia, joten CV-prosentti ei kerro paljon.</p>
 
       <div id="req-block" class="block">
         <h3 data-i18n="requirements">CV:hen kuuluvat vaatimukset ja tehtävät</h3>
@@ -78,8 +79,15 @@
 
       <div id="letter-block" class="block" hidden>
         <h3 id="letter-title"></h3>
+        <p id="letter-lead" class="lead" data-i18n="letterLead" hidden>Tässä ilmoituksessa painavat eniten asenne ja luonne. Kerro nämä hakemuskirjeessä.</p>
         <p id="letter-summary" class="muted"></p>
         <ul id="letter-list" class="req-list"></ul>
+      </div>
+
+      <div id="plus-block" class="block" hidden>
+        <h3 data-i18n="plusTitle">Plussaa</h3>
+        <p class="muted" data-i18n="plusNote">Eduksi, mutta ei vaatimus. Nämä eivät vaikuta prosenttiin. ✓ = löytyy CV:stä.</p>
+        <ul id="plus-list" class="req-list"></ul>
       </div>
 
       <div id="avail-block" class="other-block" hidden>
@@ -109,9 +117,10 @@
   </main>
 
   <footer class="wrap foot">
-    <p><span data-i18n="footer">Osuma v1.1 · ilman tekoälyä · MIT-lisenssi</span> · <a href="https://github.com/kimmo-luo/osuma" rel="noopener noreferrer">GitHub</a></p>
+    <p><span data-i18n="footer">Osuma v1.2 · ilman tekoälyä · MIT-lisenssi</span> · <a href="https://github.com/kimmo-luo/osuma" rel="noopener noreferrer">GitHub</a></p>
   </footer>
 
+  <script src="sanasto.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

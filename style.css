@@ -14,6 +14,9 @@
   --miss-bg: #fbe7e5;
   --miss-border: #efb3ad;
   --focus: #2b6cb0;
+  --warn: #7a4f00;
+  --warn-bg: #fdf3dc;
+  --warn-border: #e8c77a;
   --radius: 10px;
 }
 
@@ -33,6 +36,9 @@
     --miss-bg: #3a1c1a;
     --miss-border: #6b302b;
     --focus: #7fb2ee;
+    --warn: #f2c46d;
+    --warn-bg: #33290f;
+    --warn-border: #6b5520;
   }
 }
 
@@ -209,6 +215,19 @@ h2[tabindex="-1"]:focus { outline: none; }
 .count { font-weight: 400; color: var(--muted); }
 .ok-text { color: var(--ok); }
 .miss-text { color: var(--miss); }
+.warn {
+  margin: 12px 0 0;
+  padding: 8px 12px;
+  border: 1px solid var(--warn-border);
+  border-left-width: 4px;
+  border-radius: var(--radius);
+  background: var(--warn-bg);
+  color: var(--warn);
+}
+.lead { margin: 0 0 8px; font-weight: 600; }
+/* The letter part can be shown first, right under the title. */
+h2 + #letter-block { margin-top: 0; padding-top: 0; border-top: 0; }
+#letter-block + .score { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); }
 
 .req-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
 .req {

@@ -41,6 +41,8 @@ Suomen taivutus on huomioitu: sanoja verrataan niiden alun perusteella, joten es
 Lisäksi:
 
 - Yhdyssanan loppuosa löytyy: "kokemus" löytää sanan "työkokemus".
+- Ilmoituksen yhdyssanan alkuosa riittää: "myyntihenkisyyttä" löytyy, kun CV:ssä on "myynti" (tai synonyymi "myyjä").
+- Emojit (✅ ym.) poistetaan riveiltä ennen vertailua. "Tarjoamme sinulle" -otsikon jälkeiset rivit ovat etuja seuraavaan otsikkoon asti, myös ilman kaksoispistettä.
 - Pieni kaupan alan synonyymilista: esim. esillelaitto = esillepano, hyllytys = hyllyttäminen, inventaario = inventointi.
 - Pois jätetään täytesanat (*ja, on, sekä, että, joten, aina…*), hakuohjeiden sanat (hakemus, sähköpostilla, hakuaika, roskaposti…), kuukaudet ja päivämäärät, sähköposti- ja nettiosoitteet sekä yrityksen nimi, joka päätellään ilmoituksen osoitteista (rekry@yritys.fi) ja muodosta "Nimi Oy".
 
@@ -112,6 +114,8 @@ Finnish inflection is taken into account: words are compared by their beginning,
 Also:
 
 - The last part of a compound is found: "kokemus" finds "työkokemus".
+- The first part of an ad compound is enough: "myyntihenkisyyttä" is found when the CV has "myynti" (or its synonym "myyjä").
+- Emojis (✅ etc.) are removed before comparing. Lines after a "Tarjoamme sinulle" / "We offer" heading are benefits until the next heading, with or without a colon.
 - A small retail synonym list: e.g. esillelaitto = esillepano, hyllytys = hyllyttäminen, inventaario = inventointi.
 - Ignored: filler words (*and, the, ja, on, sekä, että, joten…*), Finnish application-instruction words (hakemus, sähköpostilla, hakuaika, roskaposti…), months and dates, email and web addresses, and the company name, which is inferred from the ad's addresses (jobs@company.fi) and from "Name Oy".
 

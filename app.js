@@ -45,7 +45,7 @@
       found: 'Löytyy CV:stä',
       missing: 'Puuttuu CV:stä',
       howto: 'Vertailu tehdään sanan alun perusteella, joten taivutetut muodot ja yhdyssanat löytyvät (esim. "myynti" löytää sanan "myyntityössä" ja "kokemus" sanan "työkokemus"). Kaupan alan synonyymit (esim. esillelaitto = esillepano) tunnistetaan. Täytesanat, hakuohjeiden sanat, päivämäärät, osoitteet ja yrityksen nimi jätetään pois. Nuoli näyttää, mikä CV:n sana vastasi.',
-      footer: 'Osuma v1 · ilman tekoälyä · MIT-lisenssi',
+      footer: 'Osuma v1.1 · ilman tekoälyä · MIT-lisenssi',
       noscript: 'Osuma tarvitsee JavaScriptin. Kaikki käsittely tapahtuu selaimessasi.',
       errBoth: 'Liitä sekä työpaikkailmoitus että CV.',
       errAd: 'Liitä työpaikkailmoitus.',
@@ -102,7 +102,7 @@
       found: 'Found in CV',
       missing: 'Missing from CV',
       howto: 'Words are compared by their beginning, so inflected forms and compounds match (e.g. "manage" finds "managing", "kokemus" finds "työkokemus"). Common retail synonyms are recognised (e.g. esillelaitto = esillepano). Filler words, application instructions, dates, addresses and the company name are ignored. The arrow shows which CV word matched.',
-      footer: 'Osuma v1 · no AI · MIT licence',
+      footer: 'Osuma v1.1 · no AI · MIT licence',
       noscript: 'Osuma needs JavaScript. Everything is processed in your browser.',
       errBoth: 'Paste both the job ad and your CV.',
       errAd: 'Paste the job ad.',
@@ -176,6 +176,7 @@
     'sähköpostilla sähköpostitse sähköpostiin sähköposti osoite osoitteessa osoitteeseen osoitteesta ' +
     'haastattelemme haastatteluun haastatteluihin viikolla viikon ' +
     'maanantaina tiistaina keskiviikkona torstaina perjantaina lauantaina sunnuntaina ' +
+    'vahvaa minkä päälle mahd mukainen omiin myyt tienaat ' +
     'www http https com fi'
   ).split(/\s+/);
 
@@ -208,6 +209,7 @@
     ['esillelaitto', 'esillepano', 'esilleasettelu'],
     ['hyllytys', 'hyllyttäminen', 'hyllyttää'],
     ['kassatyö', 'kassatyöskentely', 'kassapalvelu', 'kassa'],
+    ['myynti', 'myyjä', 'myyntityö'],
     ['asiakaspalvelu', 'asiakaspalvelija', 'asiakaspalvelutyö', 'asiakastyö'],
     ['myymälätyö', 'myymälätyöntekijä', 'myymäläapulainen'],
     ['tavaranvastaanotto', 'kuormanpurku', 'tavaranpurku', 'kuormapurku'],
@@ -540,8 +542,31 @@
     return null;
   }
 
+  // An ad compound whose first part is a whole CV word: myynti|henkisyyttä ← myynti
+  // (or its synonym myyjä). Only when the second part is generic (a skill, a spirit,
+  // experience), so CV "sales" does not fill "salesforcen" nor "myyjä" "myyntipäällikkö".
+  var GENERIC_TAIL_RE = /^(?:henki|taito|taido|taidoi|osaami|kokemu|työ|kyky|kyvy|tunte)/u;
+  function findCompoundHead(word, index) {
+    if (word.length > MAX_COMPOUND || word.indexOf('-') !== -1) return null;
+    for (var i = MIN_PREFIX; i <= word.length - 3; i++) {
+      if (!COMPOUND_JOINT.test(word.charAt(i - 1))) continue;
+      var head = word.slice(0, i);
+      if (!GENERIC_TAIL_RE.test(word.slice(i))) continue;
+      if (index.exact[head]) return head;
+      for (var g = 0; g < SYNONYMS.length; g++) {
+        if (SYNONYMS[g].indexOf(head) === -1) continue;
+        for (var j = 0; j < SYNONYMS[g].length; j++) {
+          var hit = SYNONYMS[g][j] !== head && findWord(SYNONYMS[g][j], index);
+          if (hit) return hit;
+        }
+      }
+    }
+    return null;
+  }
+
   function findInCv(word, index) {
-    var hit = findWordForms(word, index) || findSynonym(word, index) || findCompoundParts(word, index);
+    var hit = findWordForms(word, index) || findSynonym(word, index) || findCompoundParts(word, index) ||
+      findCompoundHead(word, index);
     if (hit || word.indexOf('-') === -1) return hit;
     var parts = word.split('-').filter(Boolean);
     // "Excel-osaaminen" is about Excel: generic parts need not be in the CV.
@@ -569,7 +594,7 @@
   // A heading such as "Tarjoamme:" starts a section that is not about the applicant.
   var OFFER_HEADING_RE = /(tarjoamme|meiltä saat|saat meiltä|edut|työsuhde-ed|we offer|benefits|what you get|about us|meistä)/i;
   // Headings without a colon must be short and consist of the heading phrase only.
-  var BARE_HEADING_RE = /^(?:mitä\s+)?(?:sinulla on|toivomme|edellytämme|odotamme|arvostamme|vaatimukset|eduksi katsotaan|tarjoamme|meiltä saat|edut|työsuhde-edut|requirements|qualifications|nice to have|about you|your profile|we offer|benefits)(?:\s+(?:sinulta|meiltä|you))?$/i;
+  var BARE_HEADING_RE = /^(?:mitä\s+)?(?:sinulla on|toivomme|edellytämme|odotamme|arvostamme|vaatimukset|eduksi katsotaan|tarjoamme|meiltä saat|edut|työsuhde-edut|requirements|qualifications|nice to have|about you|your profile|we offer|benefits)(?:\s+(?:sinulta|sinulle|teiltä|teille|meiltä|you))?\s*[!?.]?$/i;
   // A sentence that opens with an offer is about the employer, whatever words follow.
   var OFFER_START_RE = /^(?:tarjoamme|meiltä saat|saat meiltä|we offer|you will get|you get)\b|^työssä(?:si)?\s+pääset\s+(?:kehittä|oppi|etene|nautti|kouluttau)/i;
 
@@ -631,6 +656,13 @@
     return req || inReq ? 'req' : 'other';
   }
 
+  // Requirement words that never describe a benefit (unlike koulutus or osaaminen).
+  var STRONG_REQ_RE = /kokemu|kortti|passi$|passi[a-zäö]|tutkinto|pätevyy|^edellyt|^vaatimu|^vaaditaan|^required|^requirement|^experience|degree|qualif/u;
+  function hasStrongReqWord(text) {
+    var words = tokenize(text).map(function (t) { return t.word; });
+    return words.some(function (w, i) { return STRONG_REQ_RE.test(w) && isReqWord(w, words[i - 1]); });
+  }
+
   // Does the text contain at least one countable keyword?
   function hasKeyword(text) {
     return tokenize(text).some(isKeyword);
@@ -678,8 +710,8 @@
   }
 
   // Splits the ad into sentences and labels each one 'req', 'other' or 'apply'.
-  // A section lasts until the next heading. A bullet list also ends at the first
-  // plain-text line after it, which is usually something else (company intro, contacts).
+  // A section lasts until the next heading. A bullet list (except offers) also ends at the
+  // first plain-text line after it, which is usually something else (company intro, contacts).
   function segmentAd(ad) {
     var out = [];
     var section = null; // 'req', 'offer', 'none' or null
@@ -689,7 +721,14 @@
       if (!text) return;
       var bullet = BULLET_RE.test(line);
       if (bullet) text = line.replace(BULLET_RE, '').trim();
-      if (!bullet && sectionHasBullets) { section = null; sectionHasBullets = false; }
+      // A heading with a marker in front ("✨ Tarjoamme sinulle", "- Sinulla on:") is still a heading.
+      if (bullet && (BARE_HEADING_RE.test(text) || text.length <= 60 && /:\s*$/.test(text) &&
+          (REQ_HEADING_RE.test(text) || OFFER_HEADING_RE.test(text) || DUTY_HEADING_RE.test(text)))) bullet = false;
+      // Offers last until the next heading, plain lines included, unless the line
+      // names a requirement ("Etsimme myyjää, jolla on kokemusta kassatyöstä").
+      if (!bullet && sectionHasBullets && (section !== 'offer' || hasStrongReqWord(text))) {
+        section = null; sectionHasBullets = false;
+      }
 
       // "Sinulla on: B-ajokortti ja hygieniapassi." on one line.
       var inline = !bullet && /^([^:]{1,60}):\s*(\S.*)$/.exec(text);
@@ -850,7 +889,21 @@
     return buildIndex(words);
   }
 
+  // Emojis used as list markers or decoration (✅, 🎉, 👉🏼, 🇫🇮) and check marks.
+  // The line is then plain text: "📍 Sijainti: Turku" is not a bullet point. Bullet
+  // characters (▪ ●) are kept, and lines of emojis only (🔹🔹🔹) are dropped.
+  var EMOJI_RE = /(?![\u25AA\u25CF\u25E6\u25BA\u2022])[\p{Extended_Pictographic}\u{1F3FB}-\u{1F3FF}\u{1F1E6}-\u{1F1FF}\uFE0F\u200D\u20E3\u2713\u2717\u2718]/gu;
+  function stripEmojis(text) {
+    return (text || '').split(/\r?\n/).map(function (l) {
+      var s = l.replace(EMOJI_RE, ' ');
+      return s.trim() || !l.trim() ? s.replace(/^\s+(?=\S)/, '') : '';
+    }).join('\n');
+  }
+
   function analyse(ad, cv, letter) {
+    ad = stripEmojis(ad);
+    cv = stripEmojis(cv);
+    letter = stripEmojis(letter);
     companies = detectCompanies(ad);
     var index = buildTextIndex(cv);
     var hasLetter = !!(letter && letter.trim());
